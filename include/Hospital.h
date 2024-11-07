@@ -1,11 +1,8 @@
 #pragma once
-#include "Defs.h"
-#include "Car.h"
-#include "Patient.h"
-#include "List.h"
-#include "Queue.h"
-#include "PriQueue.h"
-
+#include "CarPriQueue.h"
+#include "CarStack.h"
+#include "PatientQueue.h"
+#include "EmergencyQueue.h"
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //	Forward Declarations
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,23 +28,27 @@ class Hospital {
 	//	Car Data
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
-	LinkedList<Car*> readySCList;				// List of Available Cars(Special-Equipment)
+	CarStack readySCList;				// List of Available Cars(Special-Equipment)
 
-	LinkedList<Car*> busySCList;				// List of Away Cars(Special-Equipment)
+	CarPriQueue outSCList;				// List of Out Cars(Special-Equipment)
 
-	LinkedList<Car*> readyNCList;				// List of Available Cars(Normal)
+	CarPriQueue backSCList;				// List of Returning Cars(Special-Equipment)
 
-	LinkedList<Car*> busyNCList;				// List of Away Cars(Normal)
+	CarStack readyNCList;				// List of Available Cars(Normal)
+
+	CarPriQueue outNCList;				// List of Out Cars(Normal)
+
+	CarPriQueue backNCList;				// List of Returning Cars(Normal)
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//	Patient Data
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
-	Queue<Patient*> NPqueue;			// Queue for Normal Patients
+	PatientQueue NPqueue;			// Queue for Normal Patients
 
-	Queue<Patient*> SPqueue;			// Queue for Special-Case Patients
+	PatientQueue SPqueue;			// Queue for Special-Case Patients
 
-	PriQueue<Patient*> EPqueue;			// Priority Queue for Emergency Case Patients Based on Case Severity
+	EmergencyQueue EPqueue;			// Priority Queue for Emergency Case Patients Based on Case Severity
 
 public:
 

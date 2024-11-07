@@ -4,7 +4,7 @@
 //	Forward Declarations
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-//class Patient;
+class Patient;
 
 //class Hospital;
 
@@ -29,6 +29,10 @@ class Car {
 
 	CarStatus carStatus;				// Ready/Assigned to a patient/Loaded with a patient
 
+	int busytime;						// Total time a car is not free
+
+	Patient* assignedPatient;			// Patient Assigned to Car at current timestep
+
 
 
 public:
@@ -40,6 +44,10 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
 	int getHID() const { return HID; }
+
+	int getBusyTime() const { return busytime; }
+
+	Patient* getAssignedPatient() const { return assignedPatient; }
 
 	CarType getCarType() const { return carType; }
 

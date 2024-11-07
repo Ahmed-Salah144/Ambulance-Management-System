@@ -13,8 +13,23 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Data Structures">
+    <Filter Include="Header Files\OLD Data Structures">
       <UniqueIdentifier>{819e1629-117d-4ca1-8e80-78a6c6f9fe00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Custom Data Structures">
+      <UniqueIdentifier>{f5a0779d-8705-4c5e-b04e-671b04b0a1a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lab Data Sturctures">
+      <UniqueIdentifier>{4a0091b4-a15f-4d3e-bf13-9145179300ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lab Data Sturctures\Stack">
+      <UniqueIdentifier>{9903ba2d-3bdd-42e4-bf52-bc9e997ba007}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lab Data Sturctures\Queue">
+      <UniqueIdentifier>{7a11c987-9fa7-4437-b1e4-b5bad92d532d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lab Data Sturctures\Priority Queue">
+      <UniqueIdentifier>{bbede3be-5219-4226-b855-8ec1c9e3610a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -53,17 +68,47 @@
     <ClInclude Include="include\Car.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Queue.h">
-      <Filter>Header Files\Data Structures</Filter>
-    </ClInclude>
-    <ClInclude Include="include\PriQueue.h">
-      <Filter>Header Files\Data Structures</Filter>
-    </ClInclude>
     <ClInclude Include="include\Defs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\List.h">
-      <Filter>Header Files\Data Structures</Filter>
+      <Filter>Header Files\OLD Data Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Lab\ArrayStack.h">
+      <Filter>Header Files\Lab Data Sturctures\Stack</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Lab\StackADT.h">
+      <Filter>Header Files\Lab Data Sturctures\Stack</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Lab\LinkedQueue.h">
+      <Filter>Header Files\Lab Data Sturctures\Queue</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Lab\Node.h">
+      <Filter>Header Files\Lab Data Sturctures\Queue</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Lab\QueueADT.h">
+      <Filter>Header Files\Lab Data Sturctures\Queue</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Lab\priQueue.h">
+      <Filter>Header Files\Lab Data Sturctures\Priority Queue</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Lab\priNode.h">
+      <Filter>Header Files\Lab Data Sturctures\Priority Queue</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CarPriQueue.h">
+      <Filter>Header Files\Custom Data Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CarStack.h">
+      <Filter>Header Files\Custom Data Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PatientQueue.h">
+      <Filter>Header Files\Custom Data Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="include\EmergencyQueue.h">
+      <Filter>Header Files\Custom Data Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HospitalList.h">
+      <Filter>Header Files\Custom Data Structures</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

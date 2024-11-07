@@ -1,5 +1,7 @@
 #include "../include/Hospital.h"
 
+//Ignore this
+
 Hospital::Hospital(int id, int scNum, int ncNum, int scSpeed, int ncSpeed)
 	:ID(id),
 	numOfSC(scNum),

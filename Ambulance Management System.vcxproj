@@ -136,13 +136,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Car.h" />
+    <ClInclude Include="include\CarPriQueue.h" />
+    <ClInclude Include="include\CarStack.h" />
     <ClInclude Include="include\Defs.h" />
+    <ClInclude Include="include\EmergencyQueue.h" />
     <ClInclude Include="include\Hospital.h" />
+    <ClInclude Include="include\HospitalList.h" />
+    <ClInclude Include="include\Lab\ArrayStack.h" />
+    <ClInclude Include="include\Lab\LinkedQueue.h" />
+    <ClInclude Include="include\Lab\Node.h" />
+    <ClInclude Include="include\Lab\priNode.h" />
+    <ClInclude Include="include\Lab\priQueue.h" />
+    <ClInclude Include="include\Lab\QueueADT.h" />
+    <ClInclude Include="include\Lab\StackADT.h" />
     <ClInclude Include="include\List.h" />
+    <ClInclude Include="include\PatientQueue.h" />
     <ClInclude Include="include\Organizer.h" />
     <ClInclude Include="include\Patient.h" />
-    <ClInclude Include="include\PriQueue.h" />
-    <ClInclude Include="include\Queue.h" />
     <ClInclude Include="include\UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

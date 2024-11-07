@@ -1,25 +1,21 @@
 #pragma once
-#include"Queue.h"
-#include"Stack.h"
-#include"PriQueue.h"
-#include"List.h"
-#include"fstream"
-#include"sstream"
-#include"string"
-#include"Patient.h"
-#include"Car.h"
-#include"Hospital.h"
+#include "List.h"
+#include "fstream"
+#include "string"
+#include "HospitalList.h"
+
 #define MAXHOSPITAL 100
+
 using namespace std;
 class Organizer
 {
-	Queue<Patient*> requests;								// Requests Yet to Arrive
+	PatientQueue requests;									// Requests Yet to Arrive
 	
-	ArrList<Hospital*> hospitals;							// List of All Loaded Hospitals
+	ArrList<Hospital*> hospitals;							// List of All Loaded Hospitals //Change this to hospitalList class
 
-	ArrList<Patient*> routedRequests;						// Patients Routed to Hospitals
+	PatientQueue finishList;								// List of All Finished Requests at current timestep
 
-	Queue<CancellationRequest> cancellationRequests;		// Patients Cancellation Request Yet to Arrive
+	LinkedQueue<CancellationRequest> cancellationRequests;	// Patients Cancellation Request Yet to Arrive
 
 	int distanceMatrix[MAXHOSPITAL][MAXHOSPITAL];			// Weighted Graph Adjacency Matrix 
 

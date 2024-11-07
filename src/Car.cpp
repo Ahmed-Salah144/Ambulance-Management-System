@@ -9,4 +9,5 @@ Car::Car(int hid, CarType cT, int speed)
 {
 	ID = totalNumberOfCars++;
 	carStatus = READY;
+	assignedPatient = nullptr;
 }

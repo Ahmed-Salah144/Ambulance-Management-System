@@ -23,7 +23,9 @@ class Patient {
 
 	int pickupTime;						// Time of Ambulance Arrival
 
-	bool cancelled;						// True if patient has cancelled the request
+	int assignmentTime;					// Time Ambulance left for the patient
+
+	//bool cancelled;						// True if patient has cancelled the request
 
 public:
 
@@ -45,11 +47,11 @@ public:
 
 	int getCaseSeverity() const { return caseSeverity; }
 
-	bool isCancelled() const { return cancelled; }
+	//bool isCancelled() const { return cancelled; }
 
 	void setPickupTime(int t) { pickupTime = t; }
 
-	void Cancel() { cancelled = true; }
+	//void Cancel() { cancelled = true; }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 };

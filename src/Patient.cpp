@@ -9,6 +9,6 @@ Patient::Patient(int id, int rT, int hid, PatientType pT, int dist, int cS)
 	caseSeverity(cS)
 {
 	pickupTime = -1;
-	cancelled = false;
+	//cancelled = false;
 }
 

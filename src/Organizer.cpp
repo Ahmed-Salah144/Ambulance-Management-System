@@ -1,5 +1,5 @@
 #include "../include/Organizer.h"
-
+//Ignore this for now
 void Organizer::Load(string filepath)
 {
 	ifstream file(filepath);  
