@@ -1,5 +1,6 @@
 #include "../include/Car.h"
 
+
 int Car::totalNumberOfCars = 0;
 
 Car::Car(int hid, CarType cT, int speed)
@@ -7,7 +8,7 @@ Car::Car(int hid, CarType cT, int speed)
 	carType(cT),
 	carSpeed(speed)
 {
-	ID = totalNumberOfCars++;
+	ID = ++totalNumberOfCars;
 	carStatus = READY;
 	assignedPatient = nullptr;
 }

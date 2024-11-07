@@ -9,7 +9,7 @@
 using namespace std;
 class Organizer
 {
-	PatientQueue requests;									// Requests Yet to Arrive
+	PatientQueue patients;									// Requests Yet to Arrive
 	
 	ArrList<Hospital*> hospitals;							// List of All Loaded Hospitals //Change this to hospitalList class
 
@@ -23,15 +23,41 @@ class Organizer
 
 	int distanceMatrix[MAXHOSPITAL][MAXHOSPITAL];			// Weighted Graph Adjacency Matrix 
 
+
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	// Output File Data
+	//////////////////////////////////////////////////////////////////////////////////////////////
+
 	int numOfHospitals;										// Number of Loaded Hospitals
+
+	int numOfCars;											// Total Number of Cars Loaded
+
+	int numOfCarsSC;										// Number of Special Cars Loaded
+
+	int numOfCarsNC;										// Number of Normal Cars Loaded
+
+	int numOfPatientsEP;									// Number of Emergency Patient Requests
+
+	int numOfPatientsSP;									// Number of Special Patient Requests
+
+	int numOfPatientsNP;									// Number of Normal Patient Requests
+
+	int numofEProuted;										// Number of Emergency Patients routed to other hospitals
+
+	int numOfPatients;										// Total Number of Patient Requests Loaded
 
 	int worldTime;											// Current Timestep of the World
 
-	int numOfRequests;										// Total Number of Requests Loaded
+	//////////////////////////////////////////////////////////////////////////////////////////////
+
 
 public:
 
+	Organizer();
+
 	void Load(string filepath);
+
+	void Output();
 
 	int getFastestEmergency();
 

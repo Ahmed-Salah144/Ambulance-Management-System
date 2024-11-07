@@ -1,5 +1,18 @@
 #include "../include/Organizer.h"
-//Ignore this for now
+
+Organizer::Organizer()
+{
+	numOfCarsNC = 0;
+	numOfCarsSC = 0;
+	numOfCars = 0;
+	numOfPatientsEP = 0;
+	numOfPatientsSP = 0;
+	numOfPatientsNP = 0;
+	numOfPatients = 0;
+	worldTime = 0;
+	numofEProuted = 0;
+	numOfHospitals = 0;
+}
 void Organizer::Load(string filepath)
 {
 	ifstream file(filepath);  
@@ -26,15 +39,21 @@ void Organizer::Load(string filepath)
 
 		file >> scNum >> ncNum;
 
+		numOfCarsSC += scNum;
+
+		numOfCarsNC += ncNum;
+
 		Hospital* temp = new Hospital(i+1,scNum,ncNum,scSpeed,ncSpeed);
 
 		hospitals.InsertEnd(temp);
 	}
 
-	file >> numOfRequests;
+	numOfCars = numOfCarsNC + numOfCarsSC;
+
+	file >> numOfPatients;
 
 
-	for (int i = 0; i < numOfRequests; i++)
+	for (int i = 0; i < numOfPatients; i++)
 	{
 		string patientTypeString="";
 		PatientType pT;
@@ -53,21 +72,23 @@ void Organizer::Load(string filepath)
 		{
 			file >> caseSeverity;
 			pT = EP;
+			numOfPatientsEP++;
 		}
 		else if (patientTypeString == "SP")
 		{
 			pT = SP;
+			numOfPatientsSP++;
 		}
 		else
 		{
 			pT = NP;
+			numOfPatientsNP++;
 		}
 
 		Patient* temp = new Patient(patientID,requestTime,hospitalID,pT,distanceToHospital,caseSeverity);
 		
-		requests.enqueue(temp);
+		patients.enqueue(temp);
 	}
-
 	// Loading Request Cancellation Data
 
 	int numOfCancellations;
@@ -82,6 +103,11 @@ void Organizer::Load(string filepath)
 
 		cancellationRequests.enqueue(temp);
 	}
+
+}
+
+void Organizer::Output()
+{
 
 }
 
@@ -109,11 +135,11 @@ void Organizer::Advance()
 
 	Patient* queueFront;				// Used to Peek the Requests Queue
 
-	requests.peek(queueFront);
+	patients.peek(queueFront);
 
-	while (!requests.isEmpty() && queueFront->getRequestTime() < worldTime)
+	while (!patients.isEmpty() && queueFront->getRequestTime() < worldTime)
 	{
-		requests.dequeue(queueFront);
+		patients.dequeue(queueFront);
 		switch (queueFront->getPatientType())
 		{
 		case NP:
@@ -133,6 +159,6 @@ void Organizer::Advance()
 			}
 			break;
 		}
-		requests.peek(queueFront);
+		patients.peek(queueFront);
 	}
 }

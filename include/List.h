@@ -17,8 +17,6 @@ public:
 
     virtual T getEntry(int index) = 0;                           // Get the element at a specific index
 
-    //virtual int Find(int key) = 0;                               // Return the index of an element by using a key
-
     virtual bool Replace(int index, const T& element) = 0;       // Replace an element at a specific index
 
     virtual int getLength() const = 0;                           // Get the length of the list
@@ -36,6 +34,7 @@ public:
 template<typename T>
 class ArrList : public ListADT<T> {
 
+protected:
     T listElements[MAXCAPACITY+1];                               // One Indexed
     int count;
 public:

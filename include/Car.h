@@ -1,10 +1,13 @@
 #pragma once
 #include "Defs.h"
+#include "Patient.h"
+#include "iostream"
+using namespace std;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //	Forward Declarations
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-class Patient;
+//class Patient;
 
 //class Hospital;
 
@@ -61,3 +64,16 @@ public:
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 };
+
+ostream& operator<<(ostream& out, Car C)
+{
+	if (C.getCarStatus() == SC)
+		out << "S";
+	else
+		out << "N";
+
+	out << C.getID() << "_H" << C.getHID();
+	if (C.getAssignedPatient() != nullptr)
+		out << "_P" << *(C.getAssignedPatient());
+	return out;
+}

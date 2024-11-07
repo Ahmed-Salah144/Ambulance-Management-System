@@ -1,5 +1,8 @@
 #include "../include/Patient.h"
 
+#include <iostream>
+using namespace std;
+
 Patient::Patient(int id, int rT, int hid, PatientType pT, int dist, int cS)
 	:ID(id),
 	requestTime(rT),
@@ -11,4 +14,3 @@ Patient::Patient(int id, int rT, int hid, PatientType pT, int dist, int cS)
 	pickupTime = -1;
 	//cancelled = false;
 }
-

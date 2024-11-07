@@ -31,6 +31,9 @@
     <Filter Include="Header Files\Lab Data Sturctures\Priority Queue">
       <UniqueIdentifier>{bbede3be-5219-4226-b855-8ec1c9e3610a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Lab Data Sturctures\List">
+      <UniqueIdentifier>{120ecf83-c03d-459f-bd9d-75371381d616}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -71,9 +74,6 @@
     <ClInclude Include="include\Defs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\List.h">
-      <Filter>Header Files\OLD Data Structures</Filter>
-    </ClInclude>
     <ClInclude Include="include\Lab\ArrayStack.h">
       <Filter>Header Files\Lab Data Sturctures\Stack</Filter>
     </ClInclude>
@@ -109,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="include\HospitalList.h">
       <Filter>Header Files\Custom Data Structures</Filter>
+    </ClInclude>
+    <ClInclude Include="include\List.h">
+      <Filter>Header Files\Lab Data Sturctures\List</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

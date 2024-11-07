@@ -1,7 +1,5 @@
 #include "../include/Hospital.h"
 
-//Ignore this
-
 Hospital::Hospital(int id, int scNum, int ncNum, int scSpeed, int ncSpeed)
 	:ID(id),
 	numOfSC(scNum),
@@ -10,14 +8,15 @@ Hospital::Hospital(int id, int scNum, int ncNum, int scSpeed, int ncSpeed)
 	for (int i = 0; i < scNum; i++)
 	{
 		Car* temp = new Car(this->ID,SC, scSpeed);
-		readySCList.InsertEnd(temp);
+		readySCList.push(temp);
 	}
 	for (int i = 0; i < ncNum; i++)
 	{
 		Car* temp = new Car(this->ID, NC, ncSpeed);
-		readyNCList.InsertEnd(temp);
+		readyNCList.push(temp);
 	}
 }
+
 
 void Hospital::EnqueueSpecialPatient(Patient* patient)
 {
@@ -36,17 +35,17 @@ void Hospital::EnqueueEmergencyPatient(Patient* patient)
 
 bool Hospital::HandleEmergencyPatient(Patient* patient)
 {
-	if (readyNCList.getLength() + readySCList.getLength() > getEmergencyQueueLength())
+	/*if (readyNCList.getLength() + readySCList.getLength() > getEmergencyQueueLength())
 	{
 		EnqueueSpecialPatient(patient);
 		return true;
-	}
+	}*/
 	return false;
 }
 
 int Hospital::getEmergencyQueueLength()
 {
-	return EPqueue.getCount();
+	return /*EPqueue.getCount();*/ 0;
 }
 
 void Hospital::Update(int worldTime)
