@@ -3,7 +3,7 @@
 #include "fstream"
 #include "string"
 #include "HospitalList.h"
-
+#include "CarPriQueue.h"
 #define MAXHOSPITAL 100
 
 using namespace std;
@@ -14,6 +14,10 @@ class Organizer
 	ArrList<Hospital*> hospitals;							// List of All Loaded Hospitals //Change this to hospitalList class
 
 	PatientQueue finishList;								// List of All Finished Requests at current timestep
+
+	CarPriQueue outList;									// List of All Cars Out for patients at current timestep
+
+	CarPriQueue backList;									// List of All Cars Returning with patients at current timestep
 
 	LinkedQueue<CancellationRequest> cancellationRequests;	// Patients Cancellation Request Yet to Arrive
 
