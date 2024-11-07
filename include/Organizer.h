@@ -63,4 +63,6 @@ public:
 
 	void Advance();
 
+	void RandomSimulation(); ///PHASE 1.2 RANDOMIZER
+
 };

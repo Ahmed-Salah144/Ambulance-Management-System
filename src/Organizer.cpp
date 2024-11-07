@@ -162,3 +162,7 @@ void Organizer::Advance()
 		patients.peek(queueFront);
 	}
 }
+
+void Organizer::RandomSimulation()
+{
+}
