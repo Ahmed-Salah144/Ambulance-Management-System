@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PATIENT_H
+#define PATIENT_H
 #include "Defs.h"
 #include <iostream>
 using namespace std;
@@ -57,8 +58,4 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 };
 
-ostream& operator<<(ostream& out, Patient P)
-{
-	out << P.getID();
-	return out;
-}
+#endif 

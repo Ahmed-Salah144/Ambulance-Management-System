@@ -1,5 +1,5 @@
 #pragma once
-#include <cassert>
+//#include <cassert>
 enum PatientType{
 
 	SP,					// Special-Case Patient
@@ -27,9 +27,18 @@ enum CarStatus {
 	LOADED				// Carrying a Patient to the Hospital
 
 };
+enum UIState {
+
+	INTERACTIVE,		// Interactive Mode On
+
+	SILENT				// Silent Mode
+
+};
 struct CancellationRequest
 {
 	int patientID;		// Patient Who Cancelled His Request
 
 	int requestTime;	// Request Arrival Time
 };
+
+

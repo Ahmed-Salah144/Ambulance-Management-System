@@ -2,6 +2,7 @@
 #include "CarStack.h"
 #include "PatientQueue.h"
 #include "EmergencyQueue.h"
+//#include "UI.h"
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //	Forward Declarations
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -9,6 +10,9 @@
 //class Car;
 
 //class Patient;
+class Organizer;
+
+class UI;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 class Hospital {
@@ -49,6 +53,8 @@ class Hospital {
 
 	EmergencyQueue EPqueue;			// Priority Queue for Emergency Case Patients Based on Case Severity
 
+	friend class UI;
+
 public:
 
 	// Hosptial Non-Defualt Constructor Requires The Number of Special and Normal Cars and Their Speeds and The Hospital ID 
@@ -67,6 +73,9 @@ public:
 
 	void Update(int worldTime);
 
+	void RandomSim(Organizer * o);
+
+	void ReturnCar(Car * car);
 
 
 };

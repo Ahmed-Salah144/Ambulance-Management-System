@@ -1,6 +1,5 @@
 #pragma once
 #define MAXCAPACITY 200
-#include <cassert>
 #include<iostream>
 using namespace std;
 template <typename T>
@@ -81,7 +80,6 @@ public:
     }
     virtual T getEntry(int index)                                // Get the element at a specific index
     {
-        assert(index >= 1 && index <= count);
 
         return listElements[index];
     }
@@ -117,164 +115,4 @@ public:
         cout << endl;
     }
 
-};
-
-template<typename T>
-struct Node {
-
-    T item;
-    Node<T>* next;
-
-    Node()
-    {
-        next = nullptr;
-    }
-    Node(const T& t)
-    {
-        next = nullptr;
-        item = t;
-    }
-};
-
-template<typename T>
-class LinkedList : public ListADT<T> {
-
-    Node<T>* head;
-
-    Node<T>* tail;
-
-    int count;
-
-public:
-    LinkedList()
-    {
-        count = 0;
-        head = nullptr;
-        tail = nullptr;
-    }
-    virtual ~LinkedList()
-    {
-        Clear();
-    }
-    virtual bool InsertEnd(const T& element)                     // Add an element to the end of the list
-    {
-        if (tail == nullptr)
-        {
-            tail = new Node<T>(element);
-            head = tail;
-        }
-        else
-        {
-            tail->next = new Node<T>(element);
-            tail = tail->next;
-        }
-        count++;
-        return true;
-    }
-    virtual bool Insert(int index, const T& element)             // Insert an element at a specific index
-    {
-        if (index < 1 || index>count+1)
-            return false;
-        if (index == count + 1)
-        {
-            InsertEnd(element);
-            return true;
-        }
-        Node<T>* current = head;
-        if (index == 1)
-        {
-            head = new Node<T>(element);
-            head->next = current;
-            count++;
-            return true;
-        }
-        for (int i = 0; i < index - 2; i++)
-        {
-            current = current->next;
-        }
-        Node<T>* newnode = new Node<T>(element);
-        newnode->next = current->next;
-        current->next = newnode;
-        count++;
-        return true;
-    }
-    virtual bool Remove(int index)                               // Remove an element at a specific index
-    {
-        if (index < 1 || index>count)
-            return false;
-        Node<T>* current = head;
-        if (index == 1)
-        {
-            head = head->next;
-            delete current;
-            count--;
-            return true;
-        }
-        for (int i = 0; i < index - 2; i++)
-        {
-            current = current->next;
-        }
-        Node<T>* temp = current->next;
-        current->next = current->next->next;
-        delete temp;
-        count--;
-        return true;
-    }
-    virtual T getEntry(int index)                                // Get the element at a specific index
-    {
-        assert( index >= 1 && index <= count);
-        Node<T>* current = head;
-        for (int i = 0; i < index-1; i++)
-        {
-            current = current->next;
-        }
-        return current->item;
-    }
-    virtual bool Replace(int index, const T& element)            // Replace an element at a specific index
-    {
-        if (index<1 || index>count)
-            return false;
-        Node<T>* current = head;
-        for (int i = 0; i < index - 1; i++)
-        {
-            current = current->next;
-        }
-        current->item = element;
-        return true;
-    }
-    virtual int getLength() const                                // Get the length of the list
-    {
-        return count;
-    }
-    virtual bool isEmpty() const                                 // Check if the list is empty
-    {
-        if (count == 0)
-            return true;
-        return false;
-    }
-    virtual void Clear()                                         // Clear all elements from the list
-    {
-        while (head != nullptr)
-        {
-            Node<T>* deletedNode = head;
-            head = head->next;
-            delete deletedNode;
-        }
-        count = 0;
-    }
-    void Print()                                                 // Print List Elements
-    {
-        Node<T>* currentNodePtr = head;
-        if (head)
-        {
-            cout << currentNodePtr->item;
-            currentNodePtr = currentNodePtr->next;
-        }
-        while (currentNodePtr != nullptr)
-        {
-            cout << " " << currentNodePtr->item;
-            currentNodePtr = currentNodePtr->next;
-        }
-        cout << endl;
-    }
 };

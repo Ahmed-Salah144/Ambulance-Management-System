@@ -1,5 +1,7 @@
-#pragma once
-#include "Defs.h"
+#ifndef CAR_H
+#define CAR_H
+
+//#include "Defs.h"
 #include "Patient.h"
 #include "iostream"
 using namespace std;
@@ -65,15 +67,4 @@ public:
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 };
 
-ostream& operator<<(ostream& out, Car C)
-{
-	if (C.getCarStatus() == SC)
-		out << "S";
-	else
-		out << "N";
-
-	out << C.getID() << "_H" << C.getHID();
-	if (C.getAssignedPatient() != nullptr)
-		out << "_P" << *(C.getAssignedPatient());
-	return out;
-}
+#endif CAR_H

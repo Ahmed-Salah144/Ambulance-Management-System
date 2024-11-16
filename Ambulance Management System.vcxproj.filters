@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\OLD Data Structures">
-      <UniqueIdentifier>{819e1629-117d-4ca1-8e80-78a6c6f9fe00}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Custom Data Structures">
       <UniqueIdentifier>{f5a0779d-8705-4c5e-b04e-671b04b0a1a6}</UniqueIdentifier>
     </Filter>

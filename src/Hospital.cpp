@@ -1,5 +1,5 @@
 #include "../include/Hospital.h"
-
+#include "../include/Organizer.h"
 Hospital::Hospital(int id, int scNum, int ncNum, int scSpeed, int ncSpeed)
 	:ID(id),
 	numOfSC(scNum),
@@ -52,4 +52,60 @@ void Hospital::Update(int worldTime)
 {
 	//Update Car position
 	//assign cars to patients
+}
+
+void Hospital::RandomSim(Organizer * o)
+{
+	int random = rand() % 100;
+	Car* carPtr=nullptr;
+	Patient* patientPtr=nullptr;
+	switch (random / 5)
+	{
+	case 2:case 3:
+		SPqueue.dequeue(patientPtr);
+		if(patientPtr)
+			o->MoveToFinish(patientPtr);
+		break;
+	case 4:
+		EPqueue.dequeue(patientPtr);
+		if (patientPtr)
+			o->MoveToFinish(patientPtr);
+		break;
+	case 5:case 6:
+		NPqueue.dequeue(patientPtr);
+		if (patientPtr)
+			o->MoveToFinish(patientPtr);
+		break;
+	case 8:
+		readySCList.pop(carPtr);
+		if (carPtr)
+			o->MoveToOut(carPtr);
+		break;
+	case 14:
+		readyNCList.pop(carPtr);
+		if (carPtr)
+			o->MoveToOut(carPtr);
+		break;
+	case 16:case 17:
+		o->MoveToBack();
+		break;
+	case 18:
+		if (random == 90)
+			break;
+		o->MoveToFree();
+		break;
+	}
+}
+
+void Hospital::ReturnCar(Car* car)
+{
+	switch (car->getCarType())
+	{
+	case SC:
+		readySCList.push(car);
+		break;
+	case NC:
+		readyNCList.push(car);
+		break;
+	}
 }

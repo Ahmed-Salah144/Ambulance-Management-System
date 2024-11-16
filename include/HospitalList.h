@@ -1,8 +1,9 @@
 #pragma once
 #include"Hospital.h"
 #include"List.h"
-class HospitalList : public ArrList<Hospital*>
+/*class HospitalList : public ArrList<Hospital*>
 {
+
 public:
 
-};
+};*/

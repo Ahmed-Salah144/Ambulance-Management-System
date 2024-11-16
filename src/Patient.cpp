@@ -1,7 +1,5 @@
 #include "../include/Patient.h"
 
-#include <iostream>
-using namespace std;
 
 Patient::Patient(int id, int rT, int hid, PatientType pT, int dist, int cS)
 	:ID(id),
@@ -13,4 +11,9 @@ Patient::Patient(int id, int rT, int hid, PatientType pT, int dist, int cS)
 {
 	pickupTime = -1;
 	//cancelled = false;
+}
+ostream& operator<<(ostream& out, Patient P)
+{
+	out << P.getID();
+	return out;
 }

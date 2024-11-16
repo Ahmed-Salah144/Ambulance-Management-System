@@ -1,14 +1,22 @@
-#pragma once
-#include "List.h"
+#ifndef ORGANIZER
+#define ORGANIZER
+
 #include "fstream"
 #include "string"
 #include "HospitalList.h"
 #include "CarPriQueue.h"
+#include "UI.h"
+
 #define MAXHOSPITAL 100
 
 using namespace std;
+
+
 class Organizer
 {
+
+	friend class UI;
+
 	PatientQueue patients;									// Requests Yet to Arrive
 	
 	ArrList<Hospital*> hospitals;							// List of All Loaded Hospitals //Change this to hospitalList class
@@ -50,6 +58,8 @@ class Organizer
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
 
+	UI* UIPtr;
+
 
 public:
 
@@ -65,4 +75,16 @@ public:
 
 	void RandomSimulation(); ///PHASE 1.2 RANDOMIZER
 
+	void SendToHospital();		//PHASE 1.2
+
+	void MoveToFinish(Patient * p);		//PHASE 1.2
+
+	void MoveToOut(Car* c);		//PHASE 1.2
+
+	void MoveToBack();		//PHASE 1.2
+
+	void MoveToFree();		//PHASE 1.2
+
 };
+
+#endif

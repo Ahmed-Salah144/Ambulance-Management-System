@@ -17,7 +17,7 @@ void Organizer::Load(string filepath)
 {
 	ifstream file(filepath);  
 
-	assert(file);				// Aborts program if file was not loaded
+	//assert(file);				// Aborts program if file was not loaded
 	
 	file >> numOfHospitals;
 
@@ -103,7 +103,7 @@ void Organizer::Load(string filepath)
 
 		cancellationRequests.enqueue(temp);
 	}
-
+	UIPtr = new UI(this);
 }
 
 void Organizer::Output()
@@ -165,4 +165,64 @@ void Organizer::Advance()
 
 void Organizer::RandomSimulation()
 {
+	while (worldTime < 100)
+	{
+		worldTime++;
+		for (int i = 1; i < numOfHospitals; i++)
+		{
+			hospitals[i]->RandomSim(this);
+		}
+		while (UIPtr->printHospitalData());
+	}
+}
+
+void Organizer::SendToHospital()
+{
+	Patient* queueFront;				// Used to Peek the Requests Queue
+
+	while (!patients.isEmpty())
+	{
+		patients.dequeue(queueFront);
+		switch (queueFront->getPatientType())
+		{
+		case NP:
+			hospitals[queueFront->getHospitalID()]->EnqueueNormalPatient(queueFront);
+			break;
+		case SP:
+			hospitals[queueFront->getHospitalID()]->EnqueueSpecialPatient(queueFront);
+			break;
+		case EP:
+			hospitals[queueFront->getHospitalID()]->EnqueueEmergencyPatient(queueFront);
+			break;
+		}
+	}
+}
+
+void Organizer::MoveToFinish(Patient * p)
+{
+	finishList.enqueue(p);
+}
+
+void Organizer::MoveToOut(Car* c)
+{
+	outList.enqueue(c, 10);
+}
+
+void Organizer::MoveToBack()
+{
+	Car* carPtr=nullptr;
+	int pri;
+	outList.dequeue(carPtr,pri);
+	if (carPtr)
+		backList.enqueue(carPtr,pri);
+}
+
+void Organizer::MoveToFree()
+{
+	Car* carPtr=nullptr;
+	int pri;
+	backList.dequeue(carPtr,pri);
+	if (carPtr)
+		hospitals[carPtr->getHID()]->ReturnCar(carPtr);
+
 }
