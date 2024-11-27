@@ -7,5 +7,15 @@ public:
 
 	void print() {}		// prints all patients in list as needed in output(<< is overloaded for Patient) 
 
-	int getCount() { return 0; }
+	int getCount() { 
+		Node<Patient*>* current = frontPtr;
+		int 	count = 0;
+		while (current) {
+			if(current->getItem()->getPatientType()==EP){
+				count += 1;
+			}
+			current = current->getNext();
+		}
+		return count;
+	}
 };

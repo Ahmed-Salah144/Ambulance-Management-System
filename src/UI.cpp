@@ -70,7 +70,7 @@ bool UI::printHospitalData()
 
 	cout << "-----------------------------------------------------------------------------\n";
 
-	cout << organizer->finishList.getCount() << " finished patients:";
+	 cout << organizer->finishList.getCount() << " finished patients:";
 	organizer->finishList.print();
 	cout << endl;
 
