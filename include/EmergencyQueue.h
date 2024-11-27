@@ -4,8 +4,14 @@
 class EmergencyQueue : public LinkedQueue<Patient*>
 {
 public:
-
-	void print() {}		// prints all patients in list as needed in output(<< is overloaded for Patient) 
+	// prints all patients in list as needed in output(<< is overloaded for Patient) 
+	void print() {
+		Node<Patient*>* current = frontPtr;
+		while (current) {
+			cout << current->getItem() <<", ";
+			current = current->getNext();
+		}
+	}		
 
 	int getCount() { 
 		Node<Patient*>* current = frontPtr;
