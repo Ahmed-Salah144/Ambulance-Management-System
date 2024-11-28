@@ -81,7 +81,3 @@ bool UI::printInterface()
 	return true;
 }
 
-void UI::printOrganizerData()
-{
-
-}
