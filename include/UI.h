@@ -16,7 +16,7 @@ class UI
 
 	int currentHospital;		// Current Hospital to Print
 
-	Organizer* organizer;
+	Organizer* organizer;		// Organizer Pointer in order to access organizer data
 
 
 public:

@@ -7,19 +7,32 @@ class PatientQueue : public LinkedQueue<Patient*>
 
 public:
 	
-	bool CancelPatientRequest(int patientID) { 
+	Patient* CancelPatientRequest(int patientID) { 
 		Node<Patient*>* current = frontPtr;
+		Node<Patient*>* prev = nullptr;
+		Patient* cancelled = nullptr;
 		while (current) {
 			if (current->getItem()->getID() == patientID) {
-				return true;
+				if (prev == nullptr)
+				{
+					cancelled = current->getItem();
+					delete current;
+					frontPtr = current->getNext();
+				}
+				else
+				{
+					cancelled = current->getItem();
+					delete current;
+					prev->setNext(current->getNext());
+				}
 			}
 			else
+			{
+				prev = current;
 				current = current->getNext();
-		}
-		
-	
-		
-		return false; }	// returns true if the request was found and cancelled false otherwise
+			}
+		}		
+		return cancelled; }	// returns cancelled patient if the request was found and cancelled and nullptr otherwise
 
 	// prints all patients in list as needed in output(<< is overloaded for Patient)
 	void print() {

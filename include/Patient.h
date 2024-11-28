@@ -17,17 +17,15 @@ class Patient {
 
 	const PatientType patientType;		// Normal/Special-Case/Emergency-Case
 
-	const int distance;						// Distance to Nearest Hospital
+	const int distance;					// Distance to Nearest Hospital
 
-	const int caseSeverity;					// for Emergency patients --- -1 for other patients
+	const int caseSeverity;				// for Emergency patients --- -1 for other patients
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
 	int pickupTime;						// Time of Ambulance Arrival
 
 	int assignmentTime;					// Time Ambulance left for the patient
-
-	//bool cancelled;						// True if patient has cancelled the request
 
 public:
 
@@ -49,11 +47,7 @@ public:
 
 	int getCaseSeverity() const { return caseSeverity; }
 
-	//bool isCancelled() const { return cancelled; }
-
 	void setPickupTime(int t) { pickupTime = t; }
-
-	//void Cancel() { cancelled = true; }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 };

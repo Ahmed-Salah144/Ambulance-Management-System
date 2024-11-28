@@ -67,15 +67,15 @@ public:
 
 	void EnqueueEmergencyPatient(Patient* patient);
 
-	bool HandleEmergencyPatient(Patient* patient);
+	bool HandleEmergencyPatient(Patient* patient);		// PHASE 2 Rerouting to other hospitals
 
 	int getEmergencyQueueLength();
 
-	void Update(int worldTime);
+	void Update(int worldTime);							// Empty as of now
 
 	void RandomSim(Organizer * o);
 
-	void ReturnCar(Car * car);
+	void ReturnCar(Car * car);							// assign car to correct readylist from the back list
 
 
 };

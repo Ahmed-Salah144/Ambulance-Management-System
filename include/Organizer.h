@@ -68,11 +68,11 @@ public:
 
 	void Load(string filepath);
 
-	void Output();
+	void Output();				// EMPTY AS OF NOW
 
-	int getFastestEmergency();
+	int getFastestEmergency();	// PHASE 2 PROTOTYPES
 
-	void Advance();
+	void Advance();				// PHASE 2 PROTOTYPES
 
 	void RandomSimulation(); ///PHASE 1.2 RANDOMIZER
 

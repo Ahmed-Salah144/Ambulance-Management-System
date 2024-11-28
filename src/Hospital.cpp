@@ -45,7 +45,7 @@ bool Hospital::HandleEmergencyPatient(Patient* patient)
 
 int Hospital::getEmergencyQueueLength()
 {
-	return /*EPqueue.getCount();*/ 0;
+	return EPqueue.getCount();
 }
 
 void Hospital::Update(int worldTime)
