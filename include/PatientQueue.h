@@ -16,14 +16,14 @@ public:
 				if (prev == nullptr)
 				{
 					cancelled = current->getItem();
-					delete current;
 					frontPtr = current->getNext();
+					delete current;
 				}
 				else
 				{
 					cancelled = current->getItem();
-					delete current;
 					prev->setNext(current->getNext());
+					delete current;
 				}
 			}
 			else

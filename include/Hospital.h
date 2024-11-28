@@ -2,14 +2,6 @@
 #include "CarQueue.h"
 #include "PatientQueue.h"
 #include "EmergencyQueue.h"
-//#include "UI.h"
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//	Forward Declarations
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-//class Car;
-
-//class Patient;
 class Organizer;
 
 class UI;
@@ -33,15 +25,8 @@ class Hospital {
 
 	CarQueue readySCList;				// List of Available Cars(Special-Equipment)
 
-	//CarPriQueue outSCList;				// List of Out Cars(Special-Equipment)
-
-	//CarPriQueue backSCList;				// List of Returning Cars(Special-Equipment)
-
 	CarQueue readyNCList;				// List of Available Cars(Normal)
 
-	//CarPriQueue outNCList;				// List of Out Cars(Normal)
-
-	//CarPriQueue backNCList;				// List of Returning Cars(Normal)
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//	Patient Data

@@ -18,7 +18,8 @@ void Organizer::Load(string filepath)
 {
 	ifstream file(filepath);  
 
-	//assert(file);				// Aborts program if file was not loaded
+	if (!file)
+		return;
 	
 	file >> numOfHospitals;
 
@@ -181,7 +182,7 @@ void Organizer::RandomSimulation()
 
 void Organizer::SendToHospital()
 {
-	Patient* queueFront;				// Used to Peek the Requests Queue
+	Patient* queueFront;
 
 	while (!patients.isEmpty())
 	{
