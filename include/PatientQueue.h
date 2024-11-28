@@ -7,9 +7,6 @@ class PatientQueue : public LinkedQueue<Patient*>
 
 public:
 	
-	
-
-
 	bool CancelPatientRequest(int patientID) { 
 		Node<Patient*>* current = frontPtr;
 		while (current) {

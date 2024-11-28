@@ -55,10 +55,10 @@ bool UI::printHospitalData()
 	hospitalPtr->NPqueue.print();
 	cout << endl;
 
-	cout << "Free Cars: " << hospitalPtr->readySCList.getCount() << " SCars, " << hospitalPtr->readyNCList.getCount() << " NCars,\n";
+	cout << "Free Cars: " << hospitalPtr->readySCList.getCount() << " SCars, " << hospitalPtr->readyNCList.getCount() << " NCars\n";
 
 	cout << "==============   Hospital #" << currentHospital << " data end  ===========\n";
-	cout << "-----------------------------------------------------------------------------\n";
+	cout << "--------------------------------------------------\n";
 
 	cout << organizer->outList.getCount() << " ==> Out Cars: "; 
 	organizer->outList.print();
@@ -68,7 +68,7 @@ bool UI::printHospitalData()
 	organizer->backList.print();
 	cout << endl;
 
-	cout << "-----------------------------------------------------------------------------\n";
+	cout << "--------------------------------------------------\n";
 
 	 cout << organizer->finishList.getCount() << " finished patients:";
 	organizer->finishList.print();

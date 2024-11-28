@@ -41,14 +41,70 @@ Single Node Case:
 #ifndef LINKED_QUEUE_
 #define LINKED_QUEUE_
 
-#include "Node.h"
-#include "QueueADT.h"
-#include <vector>
-using namespace std;
+template < typename T>
+class Node
+{
+private :
+	T item; // A data item
+	Node<T>* next; // Pointer to next node
+public :
+	Node();
+	Node( const T & r_Item);	
+	Node( const T & r_Item, Node<T>* nextNodePtr);
+	void setItem( const T & r_Item);
+	void setNext(Node<T>* nextNodePtr);
+	T getItem() const ;
+	Node<T>* getNext() const ;
+}; // end Node
+
+template < typename T>
+Node<T>::Node() 
+{
+	next = nullptr;
+} 
+
+template < typename T>
+Node<T>::Node( const T& r_Item)
+{
+	item = r_Item;
+	next = nullptr;
+} 
+
+template < typename T>
+Node<T>::Node( const T& r_Item, Node<T>* nextNodePtr)
+{
+	item = r_Item;
+	next = nextNodePtr;
+}
+template < typename T>
+void Node<T>::setItem( const T& r_Item)
+{
+	item = r_Item;
+} 
+
+template < typename T>
+void Node<T>::setNext(Node<T>* nextNodePtr)
+{
+	next = nextNodePtr;
+} 
+
+template < typename T>
+T Node<T>::getItem() const
+{
+	return item;
+} 
+
+template < typename T>
+Node<T>* Node<T>::getNext() const
+{
+	return next;
+} 
+
+
 
 
 template <typename T>
-class LinkedQueue:public QueueADT<T>
+class LinkedQueue
 {
 protected :
 	
@@ -174,17 +230,9 @@ removes all nodes from the queue by dequeuing them
 template <typename T>
 LinkedQueue<T>::~LinkedQueue()
 {
-	//Note that the cout statements here is just for learning purpose
-	//They should be normally removed from the destructor
-	cout<<"\nStarting LinkedQueue destructor...";
-	cout<<"\nFreeing all nodes in the queue...";
-
 	//Free all nodes in the queue
 	T temp;
 	while(dequeue(temp));
-	
-	cout<<"\n Is LinkedQueue Empty now?? ==> "<<boolalpha<<isEmpty();
-	cout<<"\nEnding LinkedQueue destructor..."<<endl;
 }
 /////////////////////////////////////////////////////////////////////////////////////////
 /*
@@ -209,3 +257,4 @@ LinkedQueue<T>::LinkedQueue(const LinkedQueue<T> & LQ)
 }
 
 #endif
+

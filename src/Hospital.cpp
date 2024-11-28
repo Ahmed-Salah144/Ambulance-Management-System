@@ -8,12 +8,12 @@ Hospital::Hospital(int id, int scNum, int ncNum, int scSpeed, int ncSpeed)
 	for (int i = 0; i < scNum; i++)
 	{
 		Car* temp = new Car(this->ID,SC, scSpeed);
-		readySCList.push(temp);
+		readySCList.enqueue(temp);
 	}
 	for (int i = 0; i < ncNum; i++)
 	{
 		Car* temp = new Car(this->ID, NC, ncSpeed);
-		readyNCList.push(temp);
+		readyNCList.enqueue(temp);
 	}
 }
 
@@ -77,12 +77,12 @@ void Hospital::RandomSim(Organizer * o)
 			o->MoveToFinish(patientPtr);
 		break;
 	case 8:
-		readySCList.pop(carPtr);
+		readySCList.dequeue(carPtr);
 		if (carPtr)
 			o->MoveToOut(carPtr);
 		break;
 	case 14:
-		readyNCList.pop(carPtr);
+		readyNCList.dequeue(carPtr);
 		if (carPtr)
 			o->MoveToOut(carPtr);
 		break;
@@ -102,10 +102,10 @@ void Hospital::ReturnCar(Car* car)
 	switch (car->getCarType())
 	{
 	case SC:
-		readySCList.push(car);
+		readySCList.enqueue(car);
 		break;
 	case NC:
-		readyNCList.push(car);
+		readyNCList.enqueue(car);
 		break;
 	}
 }

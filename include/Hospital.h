@@ -1,5 +1,5 @@
 #pragma once
-#include "CarStack.h"
+#include "CarQueue.h"
 #include "PatientQueue.h"
 #include "EmergencyQueue.h"
 //#include "UI.h"
@@ -31,13 +31,13 @@ class Hospital {
 	//	Car Data
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
-	CarStack readySCList;				// List of Available Cars(Special-Equipment)
+	CarQueue readySCList;				// List of Available Cars(Special-Equipment)
 
 	//CarPriQueue outSCList;				// List of Out Cars(Special-Equipment)
 
 	//CarPriQueue backSCList;				// List of Returning Cars(Special-Equipment)
 
-	CarStack readyNCList;				// List of Available Cars(Normal)
+	CarQueue readyNCList;				// List of Available Cars(Normal)
 
 	//CarPriQueue outNCList;				// List of Out Cars(Normal)
 

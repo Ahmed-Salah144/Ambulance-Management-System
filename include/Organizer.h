@@ -20,7 +20,7 @@ class Organizer
 
 	PatientQueue patients;									// Requests Yet to Arrive
 	
-	ArrList<Hospital*> hospitals;							// List of All Loaded Hospitals //Change this to hospitalList class
+	HospitalList hospitals;									// List of All Loaded Hospitals 
 
 	PatientQueue finishList;								// List of All Finished Requests at current timestep
 

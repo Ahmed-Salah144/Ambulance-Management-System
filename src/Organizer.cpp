@@ -214,7 +214,6 @@ void Organizer::MoveToOut(Car* c)
 void Organizer::MoveToBack()
 {
 	Car* carPtr=nullptr;
-	int pri;
 	outList.dequeue(carPtr);
 	if (carPtr)
 		backList.enqueue(carPtr);
@@ -223,7 +222,6 @@ void Organizer::MoveToBack()
 void Organizer::MoveToFree()
 {
 	Car* carPtr=nullptr;
-	int pri;
 	backList.dequeue(carPtr);
 	if (carPtr)
 		hospitals[carPtr->getHID()]->ReturnCar(carPtr);
