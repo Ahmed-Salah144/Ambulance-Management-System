@@ -62,5 +62,9 @@ public:
 
 	void ReturnCar(Car * car);							// assign car to correct readylist from the back list
 
+	void Clear();
+
+	~Hospital();
+
 
 };

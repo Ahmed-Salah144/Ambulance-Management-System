@@ -1,26 +1,28 @@
 #pragma once
-#include"Lab/LinkedQueue.h"
+#include"Lab/priQueue.h"
 #include"Patient.h"
-class EmergencyQueue : public LinkedQueue<Patient*>
+class EmergencyQueue : public priQueue<Patient*>
 {
 public:
 	// prints all patients in list as needed in output(<< is overloaded for Patient) 
 	void print() {
-		Node<Patient*>* current = frontPtr;
+		priNode<Patient*>* current = head;
+		int pri = -1;
 		if (!current)
 			return;
 		while (current->getNext()) {
-			cout << *(current->getItem()) <<", ";
+			cout << *(current->getItem(pri)) <<", ";
 			current = current->getNext();
 		}
-		cout << *(current->getItem());
+		cout << *(current->getItem(pri));
 	}		
 
 	int getCount() { 
-		Node<Patient*>* current = frontPtr;
+		priNode<Patient*>* current = head;
 		int 	count = 0;
+		int pri;
 		while (current) {
-			if(current->getItem()->getPatientType()==EP){
+			if(current->getItem(pri)->getPatientType()==EP){
 				count += 1;
 			}
 			current = current->getNext();

@@ -30,7 +30,7 @@ void Hospital::EnqueueNormalPatient(Patient* patient)
 
 void Hospital::EnqueueEmergencyPatient(Patient* patient)
 {
-	EPqueue.enqueue(patient);
+	EPqueue.enqueue(patient,patient->getCaseSeverity());
 }
 
 bool Hospital::HandleEmergencyPatient(Patient* patient)
@@ -67,7 +67,8 @@ void Hospital::RandomSim(Organizer * o)
 			o->MoveToFinish(patientPtr);
 		break;
 	case 4:
-		EPqueue.dequeue(patientPtr);
+		int pri;
+		EPqueue.dequeue(patientPtr,pri);
 		if (patientPtr)
 			o->MoveToFinish(patientPtr);
 		break;
@@ -108,4 +109,44 @@ void Hospital::ReturnCar(Car* car)
 		readyNCList.enqueue(car);
 		break;
 	}
+}
+
+void Hospital::Clear()
+{
+	while (!readySCList.isEmpty())
+	{
+		Car* ptr;
+		readySCList.dequeue(ptr);
+		delete ptr;
+	}
+	while (!readyNCList.isEmpty())
+	{
+		Car* ptr;
+		readyNCList.dequeue(ptr);
+		delete ptr;
+	}
+	while (!EPqueue.isEmpty())
+	{
+		Patient* ptr;
+		int pri;
+		EPqueue.dequeue(ptr, pri);
+		delete ptr;
+	}
+	while (!SPqueue.isEmpty())
+	{
+		Patient* ptr;
+		SPqueue.dequeue(ptr);
+		delete ptr;
+	}
+	while (!NPqueue.isEmpty())
+	{
+		Patient* ptr;
+		NPqueue.dequeue(ptr);
+		delete ptr;
+	}
+}
+
+Hospital::~Hospital()
+{
+	Clear();
 }

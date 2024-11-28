@@ -66,6 +66,8 @@ public:
 
 	Organizer();
 
+	~Organizer();
+
 	void Load(string filepath);
 
 	void Output();				// EMPTY AS OF NOW

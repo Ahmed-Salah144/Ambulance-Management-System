@@ -228,3 +228,37 @@ void Organizer::MoveToFree()
 		hospitals[carPtr->getHID()]->ReturnCar(carPtr);
 
 }
+
+Organizer::~Organizer()
+{
+	for (int i = 1; i <= numOfHospitals; i++)
+	{
+		hospitals[i]->Clear();
+	}
+	while (!finishList.isEmpty())
+	{
+		Patient* ptr;
+		finishList.dequeue(ptr);
+		delete ptr;
+	}
+	while (!patients.isEmpty())
+	{
+		Patient* ptr;
+		patients.dequeue(ptr);
+		delete ptr;
+	}
+	while (!backList.isEmpty())
+	{
+		Car* ptr;
+		backList.dequeue(ptr);
+		delete ptr;
+	}
+	while (!outList.isEmpty())
+	{
+		Car* ptr;
+		outList.dequeue(ptr);
+		delete ptr;
+	}
+	delete UIPtr;
+
+}
