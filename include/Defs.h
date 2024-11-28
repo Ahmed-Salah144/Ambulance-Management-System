@@ -39,6 +39,9 @@ struct CancellationRequest
 	int patientID;		// Patient Who Cancelled His Request
 
 	int requestTime;	// Request Arrival Time
+
+	int HospitalID;		// Hospital ID of cancelled request
+
 };
 
 

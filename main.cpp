@@ -3,7 +3,7 @@
 int main()
 {
 	Organizer* myOrganizer=new Organizer;
-	myOrganizer->Load("test.txt");
+	myOrganizer->Load("test2.txt");
 	myOrganizer->SendToHospital();
 	myOrganizer->RandomSimulation();
 	return 0;

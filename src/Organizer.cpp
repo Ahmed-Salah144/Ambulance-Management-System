@@ -100,7 +100,7 @@ void Organizer::Load(string filepath)
 	{
 		CancellationRequest temp;
 
-		file >> temp.requestTime >> temp.patientID;
+		file >> temp.requestTime >> temp.patientID>>temp.HospitalID;
 
 		cancellationRequests.enqueue(temp);
 	}
