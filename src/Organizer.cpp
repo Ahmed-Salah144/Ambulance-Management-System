@@ -12,6 +12,7 @@ Organizer::Organizer()
 	worldTime = 0;
 	numofEProuted = 0;
 	numOfHospitals = 0;
+	UIPtr = nullptr;
 }
 void Organizer::Load(string filepath)
 {
@@ -165,14 +166,16 @@ void Organizer::Advance()
 
 void Organizer::RandomSimulation()
 {
-	while (worldTime < 100)
+	srand(time(0));
+	while (finishList.getCount()<numOfPatients)
 	{
 		worldTime++;
-		for (int i = 1; i < numOfHospitals; i++)
+		for (int i = 1; i <= numOfHospitals; i++)
 		{
 			hospitals[i]->RandomSim(this);
 		}
-		while (UIPtr->printHospitalData());
+		if(UIPtr->getMode()==INTERACTIVE)
+			while (UIPtr->printHospitalData());
 	}
 }
 

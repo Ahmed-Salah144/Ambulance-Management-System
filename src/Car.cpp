@@ -11,8 +11,9 @@ Car::Car(int hid, CarType cT, int speed)
 	ID = ++totalNumberOfCars;
 	carStatus = READY;
 	assignedPatient = nullptr;
+	busytime = 0;
 }
-ostream& operator<<(ostream& out, Car C)
+ostream& operator<<(ostream& out, Car& C)
 {
 	if (C.getCarStatus() == SC)
 		out << "S";

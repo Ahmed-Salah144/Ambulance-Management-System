@@ -7,10 +7,13 @@ public:
 	// prints all patients in list as needed in output(<< is overloaded for Patient) 
 	void print() {
 		Node<Patient*>* current = frontPtr;
-		while (current) {
-			cout << current->getItem() <<", ";
+		if (!current)
+			return;
+		while (current->getNext()) {
+			cout << *(current->getItem()) <<", ";
 			current = current->getNext();
 		}
+		cout << *(current->getItem());
 	}		
 
 	int getCount() { 

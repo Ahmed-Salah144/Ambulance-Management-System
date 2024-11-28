@@ -6,5 +6,6 @@ int main()
 	myOrganizer->Load("test.txt");
 	myOrganizer->SendToHospital();
 	myOrganizer->RandomSimulation();
+	int x = 0;
 	return 0;
 }

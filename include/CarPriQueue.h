@@ -47,7 +47,14 @@ public:
 
 	void print() {
 		Node<Car*>* current = frontPtr;
-		int numCars = 0;
+		if (!current)
+			return;
+		while (current->getNext()) {
+			cout << *(current->getItem()) << ", ";
+			current = current->getNext();
+		}
+		cout << *(current->getItem());
+		/*int numCars = 0;
 		int numSC = 0;
 		int numNC = 0;
 		while (current) {
@@ -62,7 +69,7 @@ public:
 			current = current->getNext();
 		}
 		cout << "cars: " << numCars << "                     " << "[SCars: " << numSC << " , NCars: " << numNC << " ]" << endl;
-
+		*/
 
 	} //Loops and prints all cars as needed in output (<< is overloaded for Car)
 };

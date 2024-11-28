@@ -23,7 +23,7 @@ UI::UI(Organizer * o)
 		mode = INTERACTIVE;
 		break;
 	}
-	currentHospital = -1;
+	currentHospital = 0;
 }
 
 UIState UI::getMode()

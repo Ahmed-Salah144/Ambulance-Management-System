@@ -10,9 +10,10 @@ Patient::Patient(int id, int rT, int hid, PatientType pT, int dist, int cS)
 	caseSeverity(cS)
 {
 	pickupTime = -1;
+	assignmentTime = -1;
 	//cancelled = false;
 }
-ostream& operator<<(ostream& out, Patient P)
+ostream& operator<<(ostream& out, Patient& P)
 {
 	out << P.getID();
 	return out;

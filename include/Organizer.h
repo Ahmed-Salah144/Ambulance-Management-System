@@ -6,7 +6,8 @@
 #include "HospitalList.h"
 #include "CarPriQueue.h"
 #include "UI.h"
-
+#include <ctime>
+#include <cstdlib>
 #define MAXHOSPITAL 100
 
 using namespace std;
