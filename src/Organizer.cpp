@@ -175,7 +175,7 @@ void Organizer::RandomSimulation()
 			hospitals[i]->RandomSim(this);
 		}
 		if(UIPtr->getMode()==INTERACTIVE)
-			while (UIPtr->printHospitalData());
+			while (UIPtr->printInterface());
 	}
 }
 

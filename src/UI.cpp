@@ -31,7 +31,7 @@ UIState UI::getMode()
 	return mode;
 }
 
-bool UI::printHospitalData()
+bool UI::printInterface()
 {
 	if (++currentHospital > organizer->numOfHospitals)
 	{
@@ -79,4 +79,9 @@ bool UI::printHospitalData()
 	cin.get();
 
 	return true;
+}
+
+void UI::printOrganizerData()
+{
+
 }
