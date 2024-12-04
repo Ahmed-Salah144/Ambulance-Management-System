@@ -38,13 +38,15 @@ class Hospital {
 
 	EmergencyQueue EPqueue;			// Priority Queue for Emergency Case Patients Based on Case Severity
 
+	Organizer* organizer;
+
 	friend class UI;
 
 public:
 
 	// Hosptial Non-Defualt Constructor Requires The Number of Special and Normal Cars and Their Speeds and The Hospital ID 
 
-	Hospital(int id, int scNum, int ncNum, int scSpeed, int ncSpeed);
+	Hospital(int id, int scNum, int ncNum, int scSpeed, int ncSpeed,Organizer* o);
 
 	void EnqueueSpecialPatient(Patient* patient);
 
@@ -56,9 +58,7 @@ public:
 
 	int getEmergencyQueueLength();
 
-	void Update(int worldTime);							// Empty as of now
-
-	void RandomSim(Organizer * o);
+	void Update();							// Empty as of now
 
 	void ReturnCar(Car * car);							// assign car to correct readylist from the back list
 

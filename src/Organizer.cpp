@@ -1,5 +1,4 @@
 #include "../include/Organizer.h"
-
 Organizer::Organizer()
 {
 	numOfCarsNC = 0;
@@ -13,6 +12,9 @@ Organizer::Organizer()
 	numofEProuted = 0;
 	numOfHospitals = 0;
 	UIPtr = nullptr;
+	for (int i = 0; i < MAXHOSPITAL; i++)
+		for (int j = 0; j < MAXHOSPITAL; j++)
+			distanceMatrix[i][j] = 0;
 }
 void Organizer::Load(string filepath)
 {
@@ -45,7 +47,7 @@ void Organizer::Load(string filepath)
 
 		numOfCarsNC += ncNum;
 
-		Hospital* temp = new Hospital(i+1,scNum,ncNum,scSpeed,ncSpeed);
+		Hospital* temp = new Hospital(i+1,scNum,ncNum,scSpeed,ncSpeed,this);
 
 		hospitals.InsertEnd(temp);
 	}
@@ -110,7 +112,49 @@ void Organizer::Load(string filepath)
 
 void Organizer::Output()
 {
+	ofstream outfile("Output.txt");
+	if (!outfile)
+	{
+		cout << "Error Opening File" << endl;
+		return;
+	}
+	int npCount = 0, spCount = 0, epCount = 0;
+	int waitTimeSum = 0;
+	outfile << "FT\tPID\tQT\tWT\n";
+	while (!finishList.isEmpty())
+	{
+		Patient* ptr = nullptr;
+		finishList.dequeue(ptr);
+		outfile << ptr->getFinishTime() << "\t" << *ptr << "\t" << ptr->getRequestTime() << "\t" << ptr->getPickupTime() - ptr->getRequestTime() << endl;
+		waitTimeSum += ptr->getPickupTime() - ptr->getRequestTime();
+		switch (ptr->getPatientType())
+		{
+		case SP:
+			spCount++;
+			break;
+		case NP:
+			npCount++;
+			break;
+		case EP:
+			epCount++;
+			break;
+		}
+	}
 
+	outfile << "Patients: " << npCount + spCount + epCount << "\t[NP: " << npCount << ", SP: " << spCount << ", EP: " << epCount << "]\n";
+	outfile << "Hospitals: " << numOfHospitals << endl;
+
+	//THIS IS NOT FINISHED
+}
+
+void Organizer::Simulate(int x)
+{
+	Load("test2.txt");
+	while (worldTime<x)
+	{
+		Advance();
+	}
+	Output();
 }
 
 int Organizer::getFastestEmergency()
@@ -135,99 +179,113 @@ void Organizer::Advance()
 {
 	worldTime++;						// Advance Timestep
 
-	Patient* queueFront;				// Used to Peek the Requests Queue
+	Patient* patientsFront = nullptr;				// Used to Peek the Requests Queue
 
-	patients.peek(queueFront);
+	patients.peek(patientsFront);
 
-	while (!patients.isEmpty() && queueFront->getRequestTime() < worldTime)
+	while (!patients.isEmpty() && patientsFront->getRequestTime() <= worldTime)
 	{
-		patients.dequeue(queueFront);
-		switch (queueFront->getPatientType())
+		patients.dequeue(patientsFront);
+		switch (patientsFront->getPatientType())
 		{
 		case NP:
-			hospitals[queueFront->getHospitalID()]->EnqueueNormalPatient(queueFront);
+			hospitals[patientsFront->getHospitalID()]->EnqueueNormalPatient(patientsFront);
 			break;
 		case SP:
-			hospitals[queueFront->getHospitalID()]->EnqueueSpecialPatient(queueFront);
+			hospitals[patientsFront->getHospitalID()]->EnqueueSpecialPatient(patientsFront);
 			break;
 		case EP:
-			if (hospitals[queueFront->getHospitalID()]->HandleEmergencyPatient(queueFront))
+			if (!hospitals[patientsFront->getHospitalID()]->HandleEmergencyPatient(patientsFront))
 			{
-			}
-			else
-			{
-				hospitals[getFastestEmergency()]->EnqueueEmergencyPatient(queueFront);
+				hospitals[getFastestEmergency()]->EnqueueEmergencyPatient(patientsFront);
 				//This function is not taking distance into account FIX IT
 			}
 			break;
 		}
-		patients.peek(queueFront);
+		patients.peek(patientsFront);
 	}
-}
 
-void Organizer::RandomSimulation()
-{
-	srand(time(0));
-	while (finishList.getCount()<numOfPatients)
+	Car* outListFront = nullptr;
+	Patient* pickedPatient = nullptr;
+	int pickupTime=0;
+	outList.peek(outListFront,pickupTime);
+
+	pickupTime = -pickupTime;				//Inverted Priority
+
+	while (!outList.isEmpty() && pickupTime <= worldTime)
 	{
-		worldTime++;
-		for (int i = 1; i <= numOfHospitals; i++)
-		{
-			hospitals[i]->RandomSim(this);
-		}
-		if(UIPtr->getMode()==INTERACTIVE)
-			while (UIPtr->printInterface());
+		outList.dequeue(outListFront, pickupTime);
+		pickupTime = -pickupTime;
+		outListFront->getAssignedPatient()->setPickupTime(pickupTime);
+		int assignmentTime = outListFront->getAssignedPatient()->getAssignmentTime();
+		backList.enqueue(outListFront,-(2*worldTime-assignmentTime));//Inversion of expected arrival time
+		outList.peek(outListFront, pickupTime);
+		pickupTime = -pickupTime;
 	}
-}
 
-void Organizer::SendToHospital()
-{
-	Patient* queueFront;
+	Car* backListFront = nullptr;
+	Patient* finishedPatient = nullptr;
+	int finishTime = 0;
+	backList.peek(backListFront, finishTime);
+	finishTime = -finishTime;
 
-	while (!patients.isEmpty())
+	while (!backList.isEmpty() && finishTime <= worldTime)
 	{
-		patients.dequeue(queueFront);
-		switch (queueFront->getPatientType())
-		{
-		case NP:
-			hospitals[queueFront->getHospitalID()]->EnqueueNormalPatient(queueFront);
-			break;
-		case SP:
-			hospitals[queueFront->getHospitalID()]->EnqueueSpecialPatient(queueFront);
-			break;
-		case EP:
-			hospitals[queueFront->getHospitalID()]->EnqueueEmergencyPatient(queueFront);
-			break;
-		}
+		backList.dequeue(backListFront, finishTime);
+		finishTime = -finishTime;
+
+		finishedPatient = backListFront->getAssignedPatient();
+
+		finishList.enqueue(finishedPatient);
+
+		finishedPatient->setFinishTime(finishTime);
+
+		backListFront->setAssignedPatient(nullptr);
+
+		hospitals[backListFront->getHID()]->ReturnCar(backListFront);
+
+		backList.peek(backListFront, finishTime);
+		finishTime = -finishTime;
 	}
+
+	for (int i = 1; i <= numOfHospitals; i++)
+	{
+		hospitals[i]->Update();
+	}
+	if (UIPtr->getMode() == INTERACTIVE)
+		while (UIPtr->printInterface());
 }
 
-void Organizer::MoveToFinish(Patient * p)
+/*void Organizer::MoveToFinish(Patient* p)
 {
 	finishList.enqueue(p);
-}
+}*/
 
 void Organizer::MoveToOut(Car* c)
 {
-	outList.enqueue(c);
+	c->getAssignedPatient()->setAssignmentTime(worldTime);
+	int pri = worldTime + c->getAssignedPatient()->getDistance() / c->getCarSpeed();
+	outList.enqueue(c,-pri);
 }
 
-void Organizer::MoveToBack()
+/*void Organizer::MoveToBack()
 {
 	Car* carPtr=nullptr;
-	outList.dequeue(carPtr);
+	int pri=1;
+	outList.dequeue(carPtr,pri);
 	if (carPtr)
-		backList.enqueue(carPtr);
-}
-
+		backList.enqueue(carPtr,pri);
+}*/
+/*
 void Organizer::MoveToFree()
 {
 	Car* carPtr=nullptr;
-	backList.dequeue(carPtr);
+	int pri = 1;
+	backList.dequeue(carPtr,pri);
 	if (carPtr)
 		hospitals[carPtr->getHID()]->ReturnCar(carPtr);
 
-}
+}*/
 
 Organizer::~Organizer()
 {
@@ -250,13 +308,15 @@ Organizer::~Organizer()
 	while (!backList.isEmpty())
 	{
 		Car* ptr;
-		backList.dequeue(ptr);
+		int pri;
+		backList.dequeue(ptr,pri);
 		delete ptr;
 	}
 	while (!outList.isEmpty())
 	{
 		Car* ptr;
-		outList.dequeue(ptr);
+		int pri;
+		outList.dequeue(ptr,pri);
 		delete ptr;
 	}
 	delete UIPtr;

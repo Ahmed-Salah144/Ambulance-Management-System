@@ -1,10 +1,11 @@
 #include "../include/Hospital.h"
 #include "../include/Organizer.h"
-Hospital::Hospital(int id, int scNum, int ncNum, int scSpeed, int ncSpeed)
+Hospital::Hospital(int id, int scNum, int ncNum, int scSpeed, int ncSpeed,Organizer* o)
 	:ID(id),
 	numOfSC(scNum),
 	numOfNC(ncNum)
 {
+	organizer = o;
 	for (int i = 0; i < scNum; i++)
 	{
 		Car* temp = new Car(this->ID,SC, scSpeed);
@@ -35,11 +36,11 @@ void Hospital::EnqueueEmergencyPatient(Patient* patient)
 
 bool Hospital::HandleEmergencyPatient(Patient* patient)
 {
-	/*if (readyNCList.getLength() + readySCList.getLength() > getEmergencyQueueLength())
+	if (readyNCList.getCount() + readySCList.getCount() > getEmergencyQueueLength())
 	{
-		EnqueueSpecialPatient(patient);
+		EnqueueEmergencyPatient(patient);
 		return true;
-	}*/
+	}
 	return false;
 }
 
@@ -48,54 +49,54 @@ int Hospital::getEmergencyQueueLength()
 	return EPqueue.getCount();
 }
 
-void Hospital::Update(int worldTime)
+void Hospital::Update()
 {
+
 	//Update Car position
 	//assign cars to patients
-}
-
-void Hospital::RandomSim(Organizer * o)
-{
-	int random = rand() % 100;
-	Car* carPtr=nullptr;
-	Patient* patientPtr=nullptr;
-	switch (random / 5)
+	while (!EPqueue.isEmpty() && ! readyNCList.isEmpty())
 	{
-	case 2:case 3:
-		SPqueue.dequeue(patientPtr);
-		if(patientPtr)
-			o->MoveToFinish(patientPtr);
-		break;
-	case 4:
-		int pri;
-		EPqueue.dequeue(patientPtr,pri);
-		if (patientPtr)
-			o->MoveToFinish(patientPtr);
-		break;
-	case 5:case 6:
-		NPqueue.dequeue(patientPtr);
-		if (patientPtr)
-			o->MoveToFinish(patientPtr);
-		break;
-	case 8:
-		readySCList.dequeue(carPtr);
-		if (carPtr)
-			o->MoveToOut(carPtr);
-		break;
-	case 14:
-		readyNCList.dequeue(carPtr);
-		if (carPtr)
-			o->MoveToOut(carPtr);
-		break;
-	case 16:case 17:
-		o->MoveToBack();
-		break;
-	case 18:
-		if (random == 90)
-			break;
-		o->MoveToFree();
-		break;
+
+		Patient* patient;
+		Car* car;
+		int severity;
+		EPqueue.dequeue(patient,severity);
+		readyNCList.dequeue(car);
+		car->setAssignedPatient(patient);
+		organizer->MoveToOut(car);
 	}
+	while (!EPqueue.isEmpty() && !readySCList.isEmpty())
+	{
+
+		Patient* patient;
+		Car* car;
+		int severity;
+		EPqueue.dequeue(patient, severity);
+		readyNCList.dequeue(car);
+		car->setAssignedPatient(patient);
+		organizer->MoveToOut(car);
+	}
+	while (!SPqueue.isEmpty() && !readySCList.isEmpty())
+	{
+
+		Patient* patient;
+		Car* car;
+		SPqueue.dequeue(patient);
+		readySCList.dequeue(car);
+		car->setAssignedPatient(patient);
+		organizer->MoveToOut(car);
+	}
+	while (!NPqueue.isEmpty() && !readyNCList.isEmpty())
+	{
+
+		Patient* patient;
+		Car* car;
+		NPqueue.dequeue(patient);
+		readyNCList.dequeue(car);
+		car->setAssignedPatient(patient);
+		organizer->MoveToOut(car);
+	}
+
 }
 
 void Hospital::ReturnCar(Car* car)

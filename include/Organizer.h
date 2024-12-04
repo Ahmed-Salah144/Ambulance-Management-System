@@ -71,22 +71,20 @@ public:
 	void Load(string filepath);
 
 	void Output();				// EMPTY AS OF NOW
+	
+	void Simulate(int x);
 
 	int getFastestEmergency();	// PHASE 2 PROTOTYPES
 
 	void Advance();				// PHASE 2 PROTOTYPES
 
-	void RandomSimulation(); ///PHASE 1.2 RANDOMIZER
-
-	void SendToHospital();		//PHASE 1.2
-
-	void MoveToFinish(Patient * p);		//PHASE 1.2
+	//void MoveToFinish(Patient * p);		//PHASE 1.2
 
 	void MoveToOut(Car* c);		//PHASE 1.2
 
-	void MoveToBack();		//PHASE 1.2
+	//void MoveToBack();		//PHASE 1.2
 
-	void MoveToFree();		//PHASE 1.2
+	//void MoveToFree();		//PHASE 1.2
 
 };
 

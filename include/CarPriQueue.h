@@ -1,27 +1,27 @@
 #pragma once
 #include"Lab/priQueue.h"
 #include"Car.h"
-#include"../include/Lab/LinkedQueue.h"
-class CarPriQueue :public LinkedQueue<Car*>
+class CarPriQueue :public priQueue<Car*>
 {
 public:
 
 
 	Car* CancelPatientRequest(int patientID) {
-		Node<Car*>* current = frontPtr ;
-		Node<Car*>* prev= nullptr;
+		priNode<Car*>* current = head;
+		priNode<Car*>* prev= nullptr;
 		Car* cancelled = nullptr;
+		int pri;
 		while (current) {
-			if (current->getItem()->getAssignedPatient()->getID() == patientID) {
+			if (current->getItem(pri)->getAssignedPatient()->getID() == patientID) {
 				if (prev == nullptr) {
 
-					cancelled = current->getItem();
-					frontPtr = current->getNext();
+					cancelled = current->getItem(pri);
+					head = current->getNext();
 					delete current;
 				}
 				else
 				{
-					cancelled = current->getItem();
+					cancelled = current->getItem(pri);
 					prev->setNext(current->getNext());
 					delete current;
 				}
@@ -37,7 +37,7 @@ public:
 	//otherwise returns null
 
 	int getCount() { 
-		Node<Car*>* current = frontPtr;
+		priNode<Car*>* current = head;
 		int count=0;
 		while (current) {
 			count += 1;
@@ -49,14 +49,15 @@ public:
 	} // Returns number of cars
 
 	void print() {
-		Node<Car*>* current = frontPtr;
+		priNode<Car*>* current = head;
+		int pri;
 		if (!current)
 			return;
 		while (current->getNext()) {
-			cout << *(current->getItem()) << ", ";
+			cout << *(current->getItem(pri)) << ", ";
 			current = current->getNext();
 		}
-		cout << *(current->getItem());
+		cout << *(current->getItem(pri));
 
 	} //Loops and prints all cars as needed in output (<< is overloaded for Car)
 };

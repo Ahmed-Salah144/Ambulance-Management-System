@@ -27,6 +27,8 @@ class Patient {
 
 	int assignmentTime;					// Time Ambulance left for the patient
 
+	int finishTime;
+
 public:
 
 	Patient(int id, int rT, int hid, PatientType pT, int dist, int cS = -1);
@@ -48,6 +50,16 @@ public:
 	int getCaseSeverity() const { return caseSeverity; }
 
 	void setPickupTime(int t) { pickupTime = t; }
+
+	int getPickupTime() { return pickupTime; }
+
+	void setAssignmentTime(int t) { assignmentTime = t; }
+
+	int getAssignmentTime() { return assignmentTime; }
+
+	void setFinishTime(int t) { finishTime = t; }
+
+	int getFinishTime() { return finishTime; }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 };

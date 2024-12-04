@@ -44,6 +44,8 @@ public:
 
 	Patient* getAssignedPatient() const { return assignedPatient; }
 
+	void setAssignedPatient(Patient* p) { assignedPatient = p; }
+
 	CarType getCarType() const { return carType; }
 
 	int getCarSpeed() const { return carSpeed; }
