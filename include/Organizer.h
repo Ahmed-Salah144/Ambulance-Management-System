@@ -6,8 +6,6 @@
 #include "HospitalList.h"
 #include "CarPriQueue.h"
 #include "UI.h"
-#include <ctime>
-#include <cstdlib>
 #define MAXHOSPITAL 100
 
 using namespace std;
@@ -28,6 +26,8 @@ class Organizer
 
 	CarPriQueue backList;									// List of All Cars Returning with patients at current timestep
 
+	CarPriQueue checkupList;
+
 	LinkedQueue<CancellationRequest> cancellationRequests;	// Patients Cancellation Request Yet to Arrive
 
 	int distanceMatrix[MAXHOSPITAL][MAXHOSPITAL];			// Weighted Graph Adjacency Matrix 
@@ -39,23 +39,31 @@ class Organizer
 
 	int numOfHospitals;										// Number of Loaded Hospitals
 
-	int numOfCars;											// Total Number of Cars Loaded
+	//int numOfCars;										// Total Number of Cars Loaded
 
-	int numOfCarsSC;										// Number of Special Cars Loaded
+	//int numOfCarsSC;										// Number of Special Cars Loaded
 
-	int numOfCarsNC;										// Number of Normal Cars Loaded
+	//int numOfCarsNC;										// Number of Normal Cars Loaded
 
-	int numOfPatientsEP;									// Number of Emergency Patient Requests
+	//int numOfPatientsEP;									// Number of Emergency Patient Requests
 
-	int numOfPatientsSP;									// Number of Special Patient Requests
+	//int numOfPatientsSP;									// Number of Special Patient Requests
 
-	int numOfPatientsNP;									// Number of Normal Patient Requests
+	//int numOfPatientsNP;									// Number of Normal Patient Requests
 
-	int numofEProuted;										// Number of Emergency Patients routed to other hospitals
+	//int numofEProuted;									// Number of Emergency Patients routed to other hospitals
 
 	int numOfPatients;										// Total Number of Patient Requests Loaded
 
 	int worldTime;											// Current Timestep of the World
+
+	int failureTime;
+
+	int backFailureChance;
+
+	int outFailureChance;
+
+	int hospitalFailureChance;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -77,6 +85,14 @@ public:
 	int getFastestEmergency();	// PHASE 2 PROTOTYPES
 
 	void Advance();				// PHASE 2 PROTOTYPES
+
+	void OutCarFailure(Car * car);
+
+	void BackCarFailure(Car * car);
+
+	int CheckHospitalFailure();
+
+	int getNearestHospital(int hospitalID);
 
 	//void MoveToFinish(Patient * p);		//PHASE 1.2
 

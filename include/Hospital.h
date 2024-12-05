@@ -19,6 +19,8 @@ class Hospital {
 
 	const int numOfSC;					// Number of Special-Equipment Cars
 
+	bool failed;
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	//	Car Data
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,13 +56,38 @@ public:
 
 	void EnqueueEmergencyPatient(Patient* patient);
 
+	void EnqueueFailedPatient(Patient* patient);
+
 	bool HandleEmergencyPatient(Patient* patient);		// PHASE 2 Rerouting to other hospitals
+
+	void CancelPatient(int patientID);
 
 	int getEmergencyQueueLength();
 
-	void Update();							// Empty as of now
+	void Update();
 
-	void ReturnCar(Car * car);							// assign car to correct readylist from the back list
+	void ReturnCarToFreeList(Car * car,int time);							// assign car to correct readylist from the back list
+
+	Car* HandNCarOver();
+
+	Car* HandSCarOver();
+
+	Patient* HandNPOver();
+
+	Patient* HandSPOver();
+
+	Patient* HandEPOver();
+
+	void Fail(int nearest);
+
+	bool isFailed();
+
+	bool isNCEmpty();
+
+	bool isSCEmpty();
+
+	bool isEmpty();
+
 
 	void Clear();
 

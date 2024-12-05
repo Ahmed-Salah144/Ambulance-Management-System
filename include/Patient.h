@@ -3,6 +3,9 @@
 #include "Defs.h"
 #include <iostream>
 using namespace std;
+
+class Car;
+
 class Patient {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,17 +20,19 @@ class Patient {
 
 	const PatientType patientType;		// Normal/Special-Case/Emergency-Case
 
-	const int distance;					// Distance to Nearest Hospital
-
 	const int caseSeverity;				// for Emergency patients --- -1 for other patients
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
+
+	int distance;						// Distance to Nearest Hospital
 
 	int pickupTime;						// Time of Ambulance Arrival
 
 	int assignmentTime;					// Time Ambulance left for the patient
 
 	int finishTime;
+
+	Car* failedCar;
 
 public:
 
@@ -46,6 +51,12 @@ public:
 	PatientType getPatientType() const { return patientType; }
 
 	int getDistance() const { return distance; }
+
+	void setDistance(int d) { distance = d; }
+
+	Car* getFailedCar() const { return failedCar; }
+
+	void setFailedCar(Car * c) { failedCar = c; }
 
 	int getCaseSeverity() const { return caseSeverity; }
 

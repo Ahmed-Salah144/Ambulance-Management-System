@@ -22,9 +22,13 @@ class Car {
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
-	CarStatus carStatus;				// Ready/Assigned to a patient/Loaded with a patient
+	//CarStatus carStatus;				// Ready/Assigned to a patient/Loaded with a patient
 
-	int busytime;						// Total time a car is not free
+	int busyTime;						// Total time a car is not free
+
+	int outTime;						// Total time a car is not free
+
+	int checkupTime;
 
 	Patient* assignedPatient;			// Patient Assigned to Car at current timestep
 
@@ -40,7 +44,17 @@ public:
 
 	int getHID() const { return HID; }
 
-	int getBusyTime() const { return busytime; }
+	int getBusyTime() const { return busyTime; }
+
+	void setBusyTime(int t){ busyTime=t; }
+
+	int getOutTime() const { return outTime; }
+
+	void setOutTime(int t) { outTime = t; }
+
+	int getCheckupTime() const { return checkupTime; }
+
+	void setCheckupTime(int t) { checkupTime = t; }
 
 	Patient* getAssignedPatient() const { return assignedPatient; }
 
@@ -50,13 +64,16 @@ public:
 
 	int getCarSpeed() const { return carSpeed; }
 
-	CarStatus getCarStatus() const { return carStatus; }
+	//CarStatus getCarStatus() const { return carStatus; }
 
-	void setCarStatus(CarStatus status) { carStatus = status; }
+	//void setCarStatus(CarStatus status) { carStatus = status; }
 
 	int getID() const { return ID; }
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
+
+	void IncrementBusyTime(int t) { busyTime += t; }
+
 };
 
 ostream& operator<<(ostream& out, Car& C);

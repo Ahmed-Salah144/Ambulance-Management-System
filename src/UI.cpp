@@ -68,6 +68,10 @@ bool UI::printInterface()
 	organizer->backList.print();
 	cout << endl;
 
+	cout << organizer->checkupList.getCount() << " ==> CheckUp Cars: ";
+	organizer->checkupList.print();
+	cout << endl;
+
 	cout << "--------------------------------------------------\n";
 
 	 cout << organizer->finishList.getCount() << " finished patients:";

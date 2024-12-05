@@ -12,6 +12,8 @@ Patient::Patient(int id, int rT, int hid, PatientType pT, int dist, int cS)
 	pickupTime = -1;
 	assignmentTime = -1;
 	finishTime = -1;
+
+	failedCar = nullptr;
 }
 ostream& operator<<(ostream& out, Patient& P)
 {

@@ -6,6 +6,7 @@ Hospital::Hospital(int id, int scNum, int ncNum, int scSpeed, int ncSpeed,Organi
 	numOfNC(ncNum)
 {
 	organizer = o;
+	failed = false;
 	for (int i = 0; i < scNum; i++)
 	{
 		Car* temp = new Car(this->ID,SC, scSpeed);
@@ -34,6 +35,26 @@ void Hospital::EnqueueEmergencyPatient(Patient* patient)
 	EPqueue.enqueue(patient,patient->getCaseSeverity());
 }
 
+void Hospital::EnqueueFailedPatient(Patient* patient)
+{
+	switch (patient->getPatientType())
+	{
+	case NP:
+
+		NPqueue.enqueueFront(patient);
+		break;
+	case SP:
+
+		SPqueue.enqueueFront(patient);
+		break;
+	case EP:
+
+		EPqueue.enqueue(patient, INT_MAX);
+		break;
+
+	}
+}
+
 bool Hospital::HandleEmergencyPatient(Patient* patient)
 {
 	if (readyNCList.getCount() + readySCList.getCount() > getEmergencyQueueLength())
@@ -44,6 +65,15 @@ bool Hospital::HandleEmergencyPatient(Patient* patient)
 	return false;
 }
 
+void Hospital::CancelPatient(int patientID)
+{
+	Patient* cancelledptr=NPqueue.CancelPatientRequest(patientID);
+	if (cancelledptr)
+	{
+		delete cancelledptr;
+	}
+}
+
 int Hospital::getEmergencyQueueLength()
 {
 	return EPqueue.getCount();
@@ -52,7 +82,6 @@ int Hospital::getEmergencyQueueLength()
 void Hospital::Update()
 {
 
-	//Update Car position
 	//assign cars to patients
 	while (!EPqueue.isEmpty() && ! readyNCList.isEmpty())
 	{
@@ -69,10 +98,10 @@ void Hospital::Update()
 	{
 
 		Patient* patient;
-		Car* car;
+		Car* car=nullptr;
 		int severity;
 		EPqueue.dequeue(patient, severity);
-		readyNCList.dequeue(car);
+		readySCList.dequeue(car);
 		car->setAssignedPatient(patient);
 		organizer->MoveToOut(car);
 	}
@@ -99,8 +128,10 @@ void Hospital::Update()
 
 }
 
-void Hospital::ReturnCar(Car* car)
+void Hospital::ReturnCarToFreeList(Car* car,int time)
 {
+	car->IncrementBusyTime(time - car->getOutTime());
+	car->setOutTime(-1);
 	switch (car->getCarType())
 	{
 	case SC:
@@ -110,6 +141,67 @@ void Hospital::ReturnCar(Car* car)
 		readyNCList.enqueue(car);
 		break;
 	}
+}
+
+Car* Hospital::HandNCarOver()
+{
+	Car* car = nullptr;
+	readyNCList.dequeue(car);
+	return car;
+}
+
+Car* Hospital::HandSCarOver()
+{
+	Car* car = nullptr;
+	readySCList.dequeue(car);
+	return car;
+}
+
+Patient* Hospital::HandNPOver()
+{
+	Patient* ptr=nullptr;
+	NPqueue.dequeue(ptr);
+	return ptr;
+}
+Patient* Hospital::HandSPOver()
+{
+	Patient* ptr = nullptr;
+	SPqueue.dequeue(ptr);
+	return ptr;
+}
+Patient* Hospital::HandEPOver()
+{
+	Patient* ptr = nullptr;
+	int pri;
+	EPqueue.dequeue(ptr,pri);
+	return ptr;
+}
+
+void Hospital::Fail(int nearest)// I was trying to make this give me the nearest hospital for assigning patients later
+{
+	failed = true;
+}
+
+bool Hospital::isFailed()
+{
+	return failed;
+}
+
+bool Hospital::isNCEmpty()
+{
+	return readyNCList.isEmpty();
+}
+
+bool Hospital::isSCEmpty()
+{
+	return readySCList.isEmpty();
+}
+
+bool Hospital::isEmpty()
+{
+	if (readySCList.getCount() == numOfSC && readyNCList.getCount() == numOfNC)
+		return true;
+	return false;
 }
 
 void Hospital::Clear()

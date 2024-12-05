@@ -1,12 +1,15 @@
 #pragma once
 #include"Lab/priQueue.h"
 #include"Car.h"
+#include <ctime>
+#include <cstdlib>
 class CarPriQueue :public priQueue<Car*>
 {
 public:
 
 
-	Car* CancelPatientRequest(int patientID) {
+	Car* CancelPatientRequest(int patientID) 
+	{
 		priNode<Car*>* current = head;
 		priNode<Car*>* prev= nullptr;
 		Car* cancelled = nullptr;
@@ -25,6 +28,7 @@ public:
 					prev->setNext(current->getNext());
 					delete current;
 				}
+				break;
 			}
 			else
 			{
@@ -60,4 +64,101 @@ public:
 		cout << *(current->getItem(pri));
 
 	} //Loops and prints all cars as needed in output (<< is overloaded for Car)
+
+	Car* CheckOutFailure(int chance,int checkuptimerange)
+	{
+		if (isEmpty())
+			return nullptr;
+		int random = rand()%100;
+		if (random <= chance)
+		{
+			int pri;
+			Car* car = nullptr;
+			priNode<Car*>* current = head;
+			random = rand() % getCount();
+			if (random == 0)
+			{
+				car = current->getItem(pri);
+
+				head = head->getNext();
+
+				delete current;
+
+				car->setCheckupTime(rand() % checkuptimerange + 1);
+
+				return car;
+			}
+			for (int i = 0; i < random-1; i++)
+			{
+				current = current->getNext();
+			}
+			if (!current->getNext())
+			{
+				cerr << "Error in Failure probability" << endl;
+				return nullptr;
+			}
+			priNode<Car*>* temp = current->getNext();
+
+			car = temp->getItem(pri);
+
+			current->setNext(temp->getNext());
+
+			delete temp;
+
+			car->setCheckupTime(rand() % checkuptimerange + 1 );
+
+			return car;
+		}
+		return nullptr;
+	}
+	Car* CheckBackFailure(int chance, int checkuptimerange)
+	{
+		if (isEmpty())
+			return nullptr;
+		int random = rand() % 100;
+		if (random <= chance)
+		{
+			int pri;
+			Car* car = nullptr;
+			priNode<Car*>* current = head;
+			random = rand() % getCount();
+			if (random == 0)
+			{
+				car = current->getItem(pri);
+				if (car->getCheckupTime() > 0 || car->getAssignedPatient() == nullptr)
+					return nullptr;
+				head = head->getNext();
+
+				delete current;
+
+				car->setCheckupTime(rand() % checkuptimerange + 1);
+
+				return car;
+			}
+			for (int i = 0; i < random - 1; i++)
+			{
+				current = current->getNext();
+			}
+			if (!current->getNext())
+			{
+				cerr << "Error in Failure probability" << endl;
+				return nullptr;
+			}
+			priNode<Car*>* temp = current->getNext();
+
+			car = temp->getItem(pri);
+
+			if (car->getCheckupTime() > 0 || car->getAssignedPatient() == nullptr)
+				return nullptr;
+
+			current->setNext(temp->getNext());
+
+			delete temp;
+
+			car->setCheckupTime(rand() % checkuptimerange + 1);
+
+			return car;
+		}
+		return nullptr;
+	}
 };

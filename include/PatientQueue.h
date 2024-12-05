@@ -25,6 +25,7 @@ public:
 					prev->setNext(current->getNext());
 					delete current;
 				}
+				break;
 			}
 			else
 			{
@@ -32,6 +33,8 @@ public:
 				current = current->getNext();
 			}
 		}		
+		if (frontPtr == nullptr)
+			backPtr = nullptr;
 		return cancelled; }	// returns cancelled patient if the request was found and cancelled and nullptr otherwise
 
 	// prints all patients in list as needed in output(<< is overloaded for Patient)
@@ -54,5 +57,18 @@ public:
 			current = current->getNext();
 		}
 		return count;
+	}
+
+	void enqueueFront(Patient* patient)
+	{
+		Node<Patient*>* current = new Node<Patient*>(patient);
+
+		current->setNext(frontPtr);
+
+		frontPtr = current;
+
+		if (backPtr == nullptr)
+			backPtr = frontPtr;
+
 	}
 };

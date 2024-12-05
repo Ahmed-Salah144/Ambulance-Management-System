@@ -9,13 +9,15 @@ Car::Car(int hid, CarType cT, int speed)
 	carSpeed(speed)
 {
 	ID = ++totalNumberOfCars;
-	carStatus = READY;
+	//carStatus = READY;
 	assignedPatient = nullptr;
-	busytime = 0;
+	busyTime = 0;
+	checkupTime = -1;
+	outTime = -1;
 }
 ostream& operator<<(ostream& out, Car& C)
 {
-	if (C.getCarStatus() == SC)
+	if (C.getCarType() == SC)
 		out << "S";
 	else
 		out << "N";
