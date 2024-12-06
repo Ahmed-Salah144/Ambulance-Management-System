@@ -6,7 +6,7 @@
 #include "HospitalList.h"
 #include "CarPriQueue.h"
 #include "UI.h"
-#define MAXHOSPITAL 50
+#define MAXHOSPITAL 250
 
 using namespace std;
 
@@ -18,6 +18,8 @@ class Organizer
 
 	PatientQueue patients;									// Requests Yet to Arrive
 	
+	//vector<Patient*> testpatients;////////////////////////////////////////
+
 	HospitalList hospitals;									// List of All Loaded Hospitals 
 
 	PatientQueue finishList;								// List of All Finished Requests at current timestep

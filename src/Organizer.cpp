@@ -44,7 +44,7 @@ void Organizer::Load(string in)
 	if (!file)
 		return;
 
-	srand(time(0));
+	srand(time(0)*rand());
 
 	file >> numOfHospitals;
 
@@ -241,6 +241,7 @@ int Organizer::getFastestEmergency()
 void Organizer::Advance()
 {
 	worldTime++;						// Advance Timestep
+	assert(worldTime < 10000000);
 
 	ProcessPatientList();
 
@@ -248,16 +249,16 @@ void Organizer::Advance()
 
 	ProcessBackList();
 	
-	//ProcessCheckupList();
+	ProcessCheckupList();
 
-	//ProcessCancellationList();
+	ProcessCancellationList();
 
 
-	//Car* failedCar = nullptr;
-	//if (failedCar = outList.CheckOutFailure(outFailureChance, failureTime))
-		//OutCarFailure(failedCar);
+	Car* failedCar = nullptr;
+	if (failedCar = outList.CheckOutFailure(outFailureChance, failureTime))
+		OutCarFailure(failedCar);
 
-	//if (failedCar = backList.CheckOutFailure(outFailureChance, failureTime))
+	//if (failedCar = backList.CheckBackFailure(outFailureChance, failureTime))
 		//BackCarFailure(failedCar);
 
 	//HospitalFailure();
@@ -274,11 +275,11 @@ void Organizer::OutCarFailure(Car* car)
 {
 	Patient* patient = car->getAssignedPatient();
 
-	backList.enqueue(car, -(2 * worldTime - patient->getAssignmentTime()));
+	backList.enqueue(car, -(2 * worldTime - car->getOutTime()));
 
 	car->setAssignedPatient(nullptr);
 
-	hospitals[patient->getHospitalID()]->EnqueueFailedPatient(patient);
+	hospitals[car->getHID()]->EnqueueFailedPatient(patient);
 
 	//failedOut++;
 
@@ -288,10 +289,10 @@ void Organizer::BackCarFailure(Car* car)
 
 {
 	Patient* patient = car->getAssignedPatient();
-	if (!patient)
-	{
-		return;
-	}
+	//if (!patient)
+	//{
+		//return;
+	//}
 	switch (car->getCarType())
 	{
 	case SC:
@@ -318,7 +319,7 @@ void Organizer::BackCarFailure(Car* car)
 
 	patient->setDistance(patient->getDistance() - ( worldTime - patient->getPickupTime()) * car->getCarSpeed());
 
-	hospitals[patient->getHospitalID()]->EnqueueFailedPatient(patient);
+	hospitals[car->getHID()]->EnqueueFailedPatient(patient);
 	
 	//failedBack++;
 }
@@ -338,7 +339,9 @@ void Organizer::ProcessCancellationList()
 {
 
 	CancellationRequest cancellation{ -1,-1,-1 };
+
 	cancellationRequests.peek(cancellation);
+
 	while (!cancellationRequests.isEmpty() && cancellation.requestTime <= worldTime)
 	{
 		cancellationRequests.dequeue(cancellation);
@@ -412,8 +415,6 @@ void Organizer::ProcessOutList()
 		{
 			Car* brokenCar = assignedPatient->getFailedCar();
 			backList.enqueue(brokenCar, -(2 * worldTime - assignedPatient->getAssignmentTime()));
-			assignedPatient->setFailedCar(nullptr);
-
 		}
 
 		outList.peek(outListFront, pickupTime);
@@ -435,33 +436,39 @@ void Organizer::ProcessBackList()
 		backList.dequeue(backListFront, finishTime);
 		finishTime = -finishTime;
 
-		//if (backListFront->getCheckupTime() == -1 && backListFront->getAssignedPatient())
-		//{
+		if (backListFront->getAssignedPatient())
+		{
 			finishedPatient = backListFront->getAssignedPatient();
 
-			finishList.enqueue(finishedPatient);
+			assert(worldTime > 0);
 
-			finishedPatient->setFinishTime(finishTime);
+			finishedPatient->setFinishTime(worldTime);
+
+			finishList.enqueue(finishedPatient);
 
 			backListFront->setAssignedPatient(nullptr);
 
 			//backListFront->IncrementFreeTime(finishTime - finishedPatient->getPickupTime());
 
 			//assert(backListFront->getHID() <= numOfHospitals);
+			if (finishedPatient->getFailedCar())
+			{
+				finishedPatient->setFailedCar(nullptr);
+			}
 
 			hospitals[backListFront->getHID()]->ReturnCarToFreeList(backListFront, worldTime);
 			successfulCarCount++;
-		//}
-		//else if (backListFront->getCheckupTime() == -1)
-		//{
-			//hospitals[backListFront->getHID()]->ReturnCarToFreeList(backListFront, worldTime);
-			//successfulCarCount++;
-		//}
-		//else
-		//{
-			//checkupList.enqueue(backListFront, -(worldTime + backListFront->getCheckupTime()));
-			//failedCarCount++;
-		//}
+		}
+		else if (backListFront->getCheckupTime() == -1)
+		{
+			hospitals[backListFront->getHID()]->ReturnCarToFreeList(backListFront, worldTime);
+			successfulCarCount++;
+		}
+		else
+		{
+			checkupList.enqueue(backListFront, -(worldTime + backListFront->getCheckupTime()));
+			failedCarCount++;
+		}
 		backList.peek(backListFront, finishTime);
 		finishTime = -finishTime;
 	}
@@ -485,11 +492,12 @@ void Organizer::ProcessPatientList()
 			hospitals[patientsFront->getHospitalID()]->EnqueueSpecialPatient(patientsFront);
 			break;
 		case EP:
-			if (!hospitals[patientsFront->getHospitalID()]->HandleEmergencyPatient(patientsFront))
+			/*if (!hospitals[patientsFront->getHospitalID()]->HandleEmergencyPatient(patientsFront))
 			{
 				hospitals[getFastestEmergency()]->EnqueueEmergencyPatient(patientsFront);
 				//This function is not taking distance into account FIX IT
-			}
+			}*/
+			hospitals[patientsFront->getHospitalID()]->EnqueueEmergencyPatient(patientsFront);
 			break;
 		default:
 			assert(1 == 0);

@@ -1,5 +1,5 @@
 #pragma once
-#define MAXCAPACITY 200
+#define MAXCAPACITY 300
 #include<iostream>
 using namespace std;
 template <typename T>

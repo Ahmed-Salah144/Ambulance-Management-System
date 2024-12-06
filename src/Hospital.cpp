@@ -232,7 +232,8 @@ bool Hospital::isSCEmpty()
 
 bool Hospital::isEmpty()
 {
-	if (readySCList.getCount() == numOfSC && readyNCList.getCount() == numOfNC)//Cars Falling through?
+	if (readySCList.getCount() == numOfSC && readyNCList.getCount() == numOfNC && 
+		SPqueue.isEmpty() && NPqueue.isEmpty() && EPqueue.isEmpty())//Cars Falling through?
 		return true;
 	return false;
 }

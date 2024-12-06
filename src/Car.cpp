@@ -13,7 +13,7 @@ Car::Car(int hid, CarType cT, int speed)
 	busyTime = 0;
 	checkupTime = -1;
 	outTime = -1;
-	assert(hid <= 200);
+	assert(hid <= 250);
 }
 void Car::ResetCarCount()
 {

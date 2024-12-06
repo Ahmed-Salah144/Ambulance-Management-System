@@ -12,7 +12,7 @@ public:
 		Node<Patient*>* prev = nullptr;
 		Patient* cancelled = nullptr;
 		while (current) {
-			if (current->getItem()->getID() == patientID) {
+			if (current->getItem()->getID() == patientID && ! current->getItem()->getFailedCar()) {
 				if (prev == nullptr)
 				{
 					cancelled = current->getItem();

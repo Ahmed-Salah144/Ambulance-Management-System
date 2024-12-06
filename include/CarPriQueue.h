@@ -15,7 +15,7 @@ public:
 		Car* cancelled = nullptr;
 		int pri;
 		while (current) {
-			if (current->getItem(pri)->getAssignedPatient()->getID() == patientID) {
+			if (current->getItem(pri)->getAssignedPatient()->getID() == patientID && !current->getItem(pri)->getAssignedPatient()->getFailedCar()) {
 				if (prev == nullptr) {
 
 					cancelled = current->getItem(pri);
@@ -66,7 +66,7 @@ public:
 
 	} //Loops and prints all cars as needed in output (<< is overloaded for Car)
 
-	Car* CheckOutFailure(int chance,int checkuptimerange)
+	Car* CheckOutFailure(float chance,int checkuptimerange)
 	{
 		if (isEmpty())
 			return nullptr;
@@ -112,7 +112,7 @@ public:
 		}
 		return nullptr;
 	}
-	Car* CheckBackFailure(int chance, int checkuptimerange)
+	Car* CheckBackFailure(float chance, int checkuptimerange)
 	{
 		if (isEmpty())
 			return nullptr;
@@ -126,7 +126,7 @@ public:
 			if (random == 0)
 			{
 				car = current->getItem(pri);
-				if (car->getCheckupTime() > 0 || car->getAssignedPatient() == nullptr)
+				if (car->getCheckupTime() > 0 || car->getAssignedPatient() == nullptr || car->getAssignedPatient()->getFailedCar())
 					return nullptr;
 				head = head->getNext();
 
@@ -149,7 +149,7 @@ public:
 
 			car = temp->getItem(pri);
 
-			if (car->getCheckupTime() > 0 || car->getAssignedPatient() == nullptr)
+			if (car->getCheckupTime() > 0 || car->getAssignedPatient() == nullptr || car->getAssignedPatient()->getFailedCar())
 				return nullptr;
 
 			current->setNext(temp->getNext());

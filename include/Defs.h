@@ -1,5 +1,4 @@
 #pragma once
-
 enum PatientType{
 
 	SP,					// Special-Case Patient
