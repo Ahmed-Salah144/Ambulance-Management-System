@@ -37,7 +37,8 @@ public:
 			}
 			
 		}
-		return cancelled; }	// returns pointer to car that had the patient and removes it from list if found
+		return cancelled;
+	}	// returns pointer to car that had the patient and removes it from list if found
 	//otherwise returns null
 
 	int getCount() { 
@@ -69,8 +70,8 @@ public:
 	{
 		if (isEmpty())
 			return nullptr;
-		int random = rand()%100;
-		if (random <= chance)
+		int random = rand()%10000;
+		if (random <= chance*100)
 		{
 			int pri;
 			Car* car = nullptr;
@@ -115,8 +116,8 @@ public:
 	{
 		if (isEmpty())
 			return nullptr;
-		int random = rand() % 100;
-		if (random <= chance)
+		int random = rand() % 10000;
+		if (random <= chance*100)
 		{
 			int pri;
 			Car* car = nullptr;
@@ -160,5 +161,42 @@ public:
 			return car;
 		}
 		return nullptr;
+	}
+
+	Car* FailCarOfHospital(int hosID, int checkuptimerange)
+	{
+		priNode<Car*>* current = head;
+		priNode<Car*>* prev = nullptr;
+		Car* cancelled = nullptr;
+		int pri;
+		while (current) {
+			if (current->getItem(pri)->getHID() == hosID && current->getItem(pri)->getAssignedPatient()) 
+			{
+				if (prev == nullptr) {
+
+					cancelled = current->getItem(pri);
+					head = current->getNext();
+					delete current;
+				}
+				else
+				{
+					cancelled = current->getItem(pri);
+					prev->setNext(current->getNext());
+					delete current;
+				}
+				break;
+			}
+			else
+			{
+				prev = current;
+				current = current->getNext();
+			}
+
+		}
+		if (cancelled)
+
+			cancelled->setCheckupTime(rand() % checkuptimerange + 1);
+
+		return cancelled;
 	}
 };

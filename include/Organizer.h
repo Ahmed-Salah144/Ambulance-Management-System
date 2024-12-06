@@ -6,7 +6,7 @@
 #include "HospitalList.h"
 #include "CarPriQueue.h"
 #include "UI.h"
-#define MAXHOSPITAL 100
+#define MAXHOSPITAL 50
 
 using namespace std;
 
@@ -59,11 +59,19 @@ class Organizer
 
 	int failureTime;
 
-	int backFailureChance;
+	float backFailureChance;
 
-	int outFailureChance;
+	float outFailureChance;
 
-	int hospitalFailureChance;
+	float hospitalFailureChance;
+
+	int failedCarCount;
+
+	int successfulCarCount;
+
+	//int failedBack;
+
+	int failedHospitals;
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -76,11 +84,11 @@ public:
 
 	~Organizer();
 
-	void Load(string filepath);
+	void Load(string in);
 
-	void Output();				// EMPTY AS OF NOW
+	void Output(string out);				// EMPTY AS OF NOW
 	
-	void Simulate(int x);
+	void Simulate(string in,string out);
 
 	int getFastestEmergency();	// PHASE 2 PROTOTYPES
 
@@ -91,6 +99,18 @@ public:
 	void BackCarFailure(Car * car);
 
 	int CheckHospitalFailure();
+
+	void ProcessCancellationList();
+
+	void ProcessCheckupList();
+
+	void ProcessOutList();
+
+	void ProcessBackList();
+
+	void ProcessPatientList();
+
+	void HospitalFailure();
 
 	int getNearestHospital(int hospitalID);
 

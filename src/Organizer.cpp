@@ -1,4 +1,5 @@
 #include "../include/Organizer.h"
+#include <cassert>
 Organizer::Organizer()
 {
 	//numOfCarsNC = 0;
@@ -7,9 +8,13 @@ Organizer::Organizer()
 	//numOfPatientsEP = 0;
 	//numOfPatientsSP = 0;
 	//numOfPatientsNP = 0;
+
 	numOfPatients = 0;
+
 	worldTime = 0;
+
 	//numofEProuted = 0;
+
 	failureTime = 0;
 
 	backFailureChance = 0;
@@ -18,15 +23,23 @@ Organizer::Organizer()
 
 	hospitalFailureChance = 0;
 
+	failedCarCount = 0;
+
+	successfulCarCount = 0;
+
+	failedHospitals = 0;
+
 	numOfHospitals = 0;
+
 	UIPtr = nullptr;
+
 	for (int i = 0; i < MAXHOSPITAL; i++)
 		for (int j = 0; j < MAXHOSPITAL; j++)
 			distanceMatrix[i][j] = 0;
 }
-void Organizer::Load(string filepath)
+void Organizer::Load(string in)
 {
-	ifstream file(filepath);  
+	ifstream file(in);  
 
 	if (!file)
 		return;
@@ -123,9 +136,9 @@ void Organizer::Load(string filepath)
 	UIPtr = new UI(this);
 }
 
-void Organizer::Output()
+void Organizer::Output(string out)
 {
-	ofstream outfile("Output.txt");
+	ofstream outfile(out);
 	if (!outfile)
 	{
 		cout << "Error Opening File" << endl;
@@ -136,6 +149,7 @@ void Organizer::Output()
 	int busyTimeSum = 0;
 	int scCount = 0;
 	int ncCount = 0;
+
 	outfile << "FT\tPID\tQT\tWT\n";
 	while (!finishList.isEmpty())
 	{
@@ -173,24 +187,37 @@ void Organizer::Output()
 			delete car;
 		}
 	}
-	outfile << "Patients: " << npCount + spCount + epCount << "\t[NP: " << npCount << ", SP: " << spCount << ", EP: " << epCount << "]\n";
+	outfile << "Patients: " << npCount + spCount + epCount <<"/"<<numOfPatients<< "\t[NP: " << npCount << ", SP: " << spCount << ", EP: " << epCount << "]\n";
 	outfile << "Hospitals: " << numOfHospitals << endl;
 	outfile << "Cars: " << ncCount + scCount<< "\t[SCar: " << scCount << ", NCar: " << ncCount <<"]\n";
-	outfile << "Average Wait Time = " << (waitTimeSum * 10 / (npCount + spCount + epCount)) / 10.0f << endl << endl;
-	outfile << "Average Busy Time = " << (busyTimeSum * 10 / (ncCount + scCount)) / 10.0f << endl;
-	outfile << "Average Utilization = " << (busyTimeSum*100/(ncCount + scCount))/worldTime << "%\n";
+	if( failedHospitals == numOfHospitals || npCount + spCount + epCount == 0)
+	{
+		outfile << "Average Wait Time = " << "N/A" << endl;
+		outfile << "Average Busy Time = " << "N/A" << endl;
+		outfile << "Average Utilization = " << "N/A" << "\n";
+		outfile << "Failed Cars = " << "N/A" << "%\n";
+	}
+	else
+	{
+		outfile << "Average Wait Time = " << (waitTimeSum * 100 / (npCount + spCount + epCount)) / 100.0f << endl;
+		outfile << "Average Busy Time = " << (busyTimeSum * 100 / (ncCount + scCount)) / 100.0f << endl;
+		outfile << "Average Utilization = " << (busyTimeSum * 1000 / (ncCount + scCount)) / 10.0f / worldTime << "%\n";
+		outfile << "Failed Cars = " << (failedCarCount * 100 / successfulCarCount) / 100.0f << "%\n";
+	}
+	outfile << "Failed Cars = " << failedCarCount << "\n";
+	outfile << "Failed Hospitals = " << failedHospitals << "\n";
 	//busy time and utilisation
 	//THIS IS NOT FINISHED
 }
 
-void Organizer::Simulate(int x)
+void Organizer::Simulate(string in,string out)
 {
-	Load("test2.txt");
-	while (!hospitals.isEmpty() || !patients.isEmpty())
+	Load(in);
+	while ((!hospitals.isEmpty() || !patients.isEmpty()) && !hospitals.isFailed())
 	{
 		Advance();
 	}
-	Output();
+	Output(out);
 }
 
 int Organizer::getFastestEmergency()
@@ -215,6 +242,233 @@ void Organizer::Advance()
 {
 	worldTime++;						// Advance Timestep
 
+	ProcessPatientList();
+
+	ProcessOutList();
+
+	ProcessBackList();
+	
+	//ProcessCheckupList();
+
+	//ProcessCancellationList();
+
+
+	//Car* failedCar = nullptr;
+	//if (failedCar = outList.CheckOutFailure(outFailureChance, failureTime))
+		//OutCarFailure(failedCar);
+
+	//if (failedCar = backList.CheckOutFailure(outFailureChance, failureTime))
+		//BackCarFailure(failedCar);
+
+	//HospitalFailure();
+
+	for (int i = 1; i <= numOfHospitals; i++)
+	{
+		hospitals[i]->Update();
+	}
+	if (UIPtr->getMode() == INTERACTIVE)
+		while (UIPtr->printInterface());
+}
+
+void Organizer::OutCarFailure(Car* car)
+{
+	Patient* patient = car->getAssignedPatient();
+
+	backList.enqueue(car, -(2 * worldTime - patient->getAssignmentTime()));
+
+	car->setAssignedPatient(nullptr);
+
+	hospitals[patient->getHospitalID()]->EnqueueFailedPatient(patient);
+
+	//failedOut++;
+
+}
+
+void Organizer::BackCarFailure(Car* car)
+
+{
+	Patient* patient = car->getAssignedPatient();
+	if (!patient)
+	{
+		return;
+	}
+	switch (car->getCarType())
+	{
+	case SC:
+		if (hospitals[car->getHID()]->isSCEmpty() && !hospitals[car->getHID()]->isFailed())
+		{
+			backList.enqueue(car, -(patient->getAssignmentTime() + patient->getDistance() + car->getCarSpeed()));
+			car->setCheckupTime(-1);
+			return;
+		}
+		break;
+	case NC:
+		if (hospitals[car->getHID()]->isNCEmpty() && !hospitals[car->getHID()]->isFailed())
+		{
+			backList.enqueue(car, -(patient->getAssignmentTime() + patient->getDistance() + car->getCarSpeed()));
+			car->setCheckupTime(-1);
+			return;
+		}
+		break;
+	}
+
+	car->setAssignedPatient(nullptr);
+
+	patient->setFailedCar(car);
+
+	patient->setDistance(patient->getDistance() - ( worldTime - patient->getPickupTime()) * car->getCarSpeed());
+
+	hospitals[patient->getHospitalID()]->EnqueueFailedPatient(patient);
+	
+	//failedBack++;
+}
+
+int Organizer::CheckHospitalFailure()
+{
+	int random = rand() % 10000;
+	int x;
+	if (random < hospitalFailureChance*100)
+	{
+		return rand() % numOfHospitals + 1;
+	}
+	return 0;
+}
+
+void Organizer::ProcessCancellationList()
+{
+
+	CancellationRequest cancellation{ -1,-1,-1 };
+	cancellationRequests.peek(cancellation);
+	while (!cancellationRequests.isEmpty() && cancellation.requestTime <= worldTime)
+	{
+		cancellationRequests.dequeue(cancellation);
+		Car* cancelledCar = outList.CancelPatientRequest(cancellation.patientID);
+		if (cancelledCar)
+		{
+			Patient* cancelledPatient = cancelledCar->getAssignedPatient();
+			cancelledCar->setAssignedPatient(nullptr);
+
+			backList.enqueue(cancelledCar, -(2 * worldTime - cancelledPatient->getAssignmentTime()));
+
+			delete cancelledPatient;
+		}
+		else
+		{
+			hospitals[cancellation.HospitalID]->CancelPatient(cancellation.patientID);
+		}
+		cancellationRequests.peek(cancellation);
+	}
+}
+
+void Organizer::ProcessCheckupList()
+{
+	Car* checkupListFront = nullptr;
+	int finishTime = 0;
+	checkupList.peek(checkupListFront, finishTime);
+	finishTime = -finishTime;
+
+	while (!checkupList.isEmpty() && finishTime <= worldTime)
+	{
+		checkupList.dequeue(checkupListFront, finishTime);
+		finishTime = -finishTime;
+
+		checkupListFront->setCheckupTime(-1);
+
+		//assert(checkupListFront->getHID() <= numOfHospitals);
+
+		hospitals[checkupListFront->getHID()]->ReturnCarToFreeList(checkupListFront, worldTime);
+
+		checkupList.peek(checkupListFront, finishTime);
+		finishTime = -finishTime;
+	}
+
+}
+
+void Organizer::ProcessOutList()
+{
+
+	Car* outListFront = nullptr;
+	Patient* pickedPatient = nullptr;
+	int pickupTime = 0;
+	outList.peek(outListFront, pickupTime);
+
+	pickupTime = -pickupTime;				//Inverted Priority
+
+	while (!outList.isEmpty() && pickupTime <= worldTime)
+	{
+		outList.dequeue(outListFront, pickupTime);
+
+		pickupTime = -pickupTime;
+
+		Patient* assignedPatient = outListFront->getAssignedPatient();
+
+		assignedPatient->setPickupTime(pickupTime);
+
+		//outListFront->IncrementFreeTime(pickupTime - assignmentTime);
+
+		backList.enqueue(outListFront, -(2 * worldTime - assignedPatient->getAssignmentTime()));//Inversion of expected arrival time
+
+		if (assignedPatient->getFailedCar())
+		{
+			Car* brokenCar = assignedPatient->getFailedCar();
+			backList.enqueue(brokenCar, -(2 * worldTime - assignedPatient->getAssignmentTime()));
+			assignedPatient->setFailedCar(nullptr);
+
+		}
+
+		outList.peek(outListFront, pickupTime);
+
+		pickupTime = -pickupTime;
+	}
+}
+
+void Organizer::ProcessBackList()
+{
+	Car* backListFront = nullptr;
+	Patient* finishedPatient = nullptr;
+	int finishTime = 0;
+	backList.peek(backListFront, finishTime);
+	finishTime = -finishTime;
+
+	while (!backList.isEmpty() && finishTime <= worldTime)
+	{
+		backList.dequeue(backListFront, finishTime);
+		finishTime = -finishTime;
+
+		//if (backListFront->getCheckupTime() == -1 && backListFront->getAssignedPatient())
+		//{
+			finishedPatient = backListFront->getAssignedPatient();
+
+			finishList.enqueue(finishedPatient);
+
+			finishedPatient->setFinishTime(finishTime);
+
+			backListFront->setAssignedPatient(nullptr);
+
+			//backListFront->IncrementFreeTime(finishTime - finishedPatient->getPickupTime());
+
+			//assert(backListFront->getHID() <= numOfHospitals);
+
+			hospitals[backListFront->getHID()]->ReturnCarToFreeList(backListFront, worldTime);
+			successfulCarCount++;
+		//}
+		//else if (backListFront->getCheckupTime() == -1)
+		//{
+			//hospitals[backListFront->getHID()]->ReturnCarToFreeList(backListFront, worldTime);
+			//successfulCarCount++;
+		//}
+		//else
+		//{
+			//checkupList.enqueue(backListFront, -(worldTime + backListFront->getCheckupTime()));
+			//failedCarCount++;
+		//}
+		backList.peek(backListFront, finishTime);
+		finishTime = -finishTime;
+	}
+}
+
+void Organizer::ProcessPatientList()
+{
 	Patient* patientsFront = nullptr;				// Used to Peek the Requests Queue
 
 	patients.peek(patientsFront);
@@ -237,214 +491,50 @@ void Organizer::Advance()
 				//This function is not taking distance into account FIX IT
 			}
 			break;
+		default:
+			assert(1 == 0);
 		}
 		patients.peek(patientsFront);
 	}
+}
 
-	Car* outListFront = nullptr;
-	Patient* pickedPatient = nullptr;
-	int pickupTime=0;
-	outList.peek(outListFront,pickupTime);
-
-	pickupTime = -pickupTime;				//Inverted Priority
-
-	while (!outList.isEmpty() && pickupTime <= worldTime)
-	{
-		outList.dequeue(outListFront, pickupTime);
-
-		pickupTime = -pickupTime;
-
-		Patient* assignedPatient = outListFront->getAssignedPatient();
-
-		assignedPatient->setPickupTime(pickupTime);
-
-		//outListFront->IncrementFreeTime(pickupTime - assignmentTime);
-
-		backList.enqueue(outListFront,-(2*worldTime- assignedPatient->getAssignmentTime()));//Inversion of expected arrival time
-
-		if (assignedPatient->getFailedCar())
-		{
-			Car* brokenCar = assignedPatient->getFailedCar();
-			backList.enqueue(brokenCar, -(2 * worldTime - assignedPatient->getAssignmentTime()));
-			assignedPatient->setFailedCar(nullptr);
-
-		}
-
-		outList.peek(outListFront, pickupTime);
-
-		pickupTime = -pickupTime;
-	}
-
-	Car* backListFront = nullptr;
-	Patient* finishedPatient = nullptr;
-	int finishTime = 0;
-	backList.peek(backListFront, finishTime);
-	finishTime = -finishTime;
-
-	while (!backList.isEmpty() && finishTime <= worldTime)
-	{
-		backList.dequeue(backListFront, finishTime);
-		finishTime = -finishTime;
-
-		if (backListFront->getCheckupTime() == -1 && backListFront->getAssignedPatient())
-		{
-			finishedPatient = backListFront->getAssignedPatient();
-
-			finishList.enqueue(finishedPatient);
-
-			finishedPatient->setFinishTime(finishTime);
-
-			backListFront->setAssignedPatient(nullptr);
-
-			//backListFront->IncrementFreeTime(finishTime - finishedPatient->getPickupTime());
-
-			hospitals[backListFront->getHID()]->ReturnCarToFreeList(backListFront,worldTime);
-		}
-		else if(backListFront->getCheckupTime() == -1)
-			hospitals[backListFront->getHID()]->ReturnCarToFreeList(backListFront,worldTime);
-		else
-			checkupList.enqueue(backListFront, -(worldTime+backListFront->getCheckupTime()));
-
-		backList.peek(backListFront, finishTime);
-		finishTime = -finishTime;
-	}
-
-	Car* checkupListFront = nullptr;
-	finishTime = 0;
-	checkupList.peek(checkupListFront, finishTime);
-	finishTime = -finishTime;
-
-	while (!checkupList.isEmpty() && finishTime <= worldTime)
-	{
-		checkupList.dequeue(checkupListFront, finishTime);
-		finishTime = -finishTime;
-
-		checkupListFront->setCheckupTime(-1);
-		hospitals[checkupListFront->getHID()]->ReturnCarToFreeList(checkupListFront,worldTime);
-
-		checkupList.peek(checkupListFront, finishTime);
-		finishTime = -finishTime;
-	}
-
-	CancellationRequest cancellation{-1,-1,-1};
-	cancellationRequests.peek(cancellation);
-	while (!cancellationRequests.isEmpty() && cancellation.requestTime <= worldTime)
-	{
-		cancellationRequests.dequeue(cancellation);
-		Car * cancelledCar = outList.CancelPatientRequest(cancellation.patientID);
-		if (cancelledCar)
-		{
-			Patient* cancelledPatient = cancelledCar->getAssignedPatient();
-			cancelledCar->setAssignedPatient(nullptr);
-
-			backList.enqueue(cancelledCar, - (2*worldTime - cancelledPatient->getAssignmentTime()));
-
-			delete cancelledPatient;
-		}
-		else
-		{
-			hospitals[cancellation.HospitalID]->CancelPatient(cancellation.patientID);
-		}
-		cancellationRequests.peek(cancellation);
-	}
-	Car* failedCar = nullptr;
-
-	failedCar = outList.CheckOutFailure(outFailureChance, failureTime);
-
-	if (failedCar)
-		OutCarFailure(failedCar);
-
-	failedCar = nullptr;
-
-	failedCar = backList.CheckBackFailure(backFailureChance,failureTime);
-
-	if (failedCar)
-	{
-		switch (failedCar->getCarType())
-		{
-		case SC:
-			if (hospitals[failedCar->getHID()]->isSCEmpty())
-			{
-				backList.enqueue(failedCar, -(failedCar->getAssignedPatient()->getAssignmentTime() + failedCar->getAssignedPatient()->getDistance() + failedCar->getCarSpeed()));
-				failedCar->setCheckupTime(-1);
-			}
-			else
-				BackCarFailure(failedCar);
-			break;
-		case NC:
-			if (hospitals[failedCar->getHID()]->isNCEmpty())
-			{
-				backList.enqueue(failedCar, -(failedCar->getAssignedPatient()->getAssignmentTime()+ failedCar->getAssignedPatient()->getDistance() +failedCar->getCarSpeed()));
-				failedCar->setCheckupTime(-1);
-			}
-			else
-				BackCarFailure(failedCar);
-			break;
-		}
-	}
+void Organizer::HospitalFailure()
+{
 	int failedHospitalID = CheckHospitalFailure();
+	if (!failedHospitalID || hospitals[failedHospitalID]->isFailed())
+		return;
 
-	if (failedHospitalID && !hospitals[failedHospitalID]->isFailed())
+	int nearestID = getNearestHospital(failedHospitalID);
+
+	Patient* patient = nullptr;
+	while (patient = hospitals[failedHospitalID]->HandNPOver())
 	{
-		int nearestID = getNearestHospital(failedHospitalID);
-
-		Patient* patient=nullptr;
-		while (patient = hospitals[failedHospitalID]->HandNPOver())
-		{
-			hospitals[nearestID]->EnqueueNormalPatient(patient);
-		}
-		while (patient = hospitals[failedHospitalID]->HandSPOver())
-		{
-			hospitals[nearestID]->EnqueueSpecialPatient(patient);
-		}
-		while (patient = hospitals[failedHospitalID]->HandEPOver())
-		{
-			hospitals[nearestID]->EnqueueEmergencyPatient(patient);
-		}
-		hospitals[failedHospitalID]->Clear();
-
+		hospitals[nearestID]->EnqueueNormalPatient(patient);
 	}
-	for (int i = 1; i <= numOfHospitals; i++)
+	while (patient = hospitals[failedHospitalID]->HandSPOver())
 	{
-		hospitals[i]->Update();
+		hospitals[nearestID]->EnqueueSpecialPatient(patient);
 	}
-	if (UIPtr->getMode() == INTERACTIVE)
-		while (UIPtr->printInterface());
-}
-
-void Organizer::OutCarFailure(Car* car)
-{
-	Patient* patient = car->getAssignedPatient();
-
-	backList.enqueue(car, -(2 * worldTime - patient->getAssignmentTime()));
-
-	car->setAssignedPatient(nullptr);
-
-	hospitals[patient->getHospitalID()]->EnqueueFailedPatient(patient);
-
-}
-
-void Organizer::BackCarFailure(Car* car)
-{
-	Patient* patient = car->getAssignedPatient();
-
-	car->setAssignedPatient(nullptr);
-
-	patient->setFailedCar(car);
-
-	patient->setDistance(patient->getDistance() - ( worldTime - patient->getPickupTime()) * car->getCarSpeed());
-
-	hospitals[patient->getHospitalID()]->EnqueueFailedPatient(patient);
-}
-
-int Organizer::CheckHospitalFailure()
-{
-	int random = rand() % 100;
-	if (random <= hospitalFailureChance)
+	while (patient = hospitals[failedHospitalID]->HandEPOver())
 	{
-		return random = rand() % numOfHospitals + 1;
+		hospitals[nearestID]->EnqueueEmergencyPatient(patient);
 	}
-	return 0;
+	hospitals[failedHospitalID]->Clear();
+
+	hospitals[failedHospitalID]->Fail(hospitals[failedHospitalID]);
+
+	Car* car = nullptr;
+
+	while (car = backList.FailCarOfHospital(failedHospitalID, failureTime))
+	{
+		BackCarFailure(car);
+	}
+
+	while (car = outList.FailCarOfHospital(failedHospitalID, failureTime))
+	{
+		OutCarFailure(car);
+	}
+	failedHospitals++;
 }
 
 int Organizer::getNearestHospital(int hospitalID)
@@ -453,9 +543,10 @@ int Organizer::getNearestHospital(int hospitalID)
 	int closestID = -1;
 	for (int i = 1; i <= numOfHospitals; i++)
 	{
-		if (distanceMatrix[hospitalID][i] < min && i!=hospitalID)
+		if (distanceMatrix[hospitalID-1][i-1] < min && i!=hospitalID && !hospitals[hospitalID]->isFailed())
 		{
 			closestID = i;
+			min = distanceMatrix[hospitalID - 1][i - 1];
 		}
 	}
 	return closestID;
@@ -525,6 +616,8 @@ Organizer::~Organizer()
 		outList.dequeue(ptr,pri);
 		delete ptr;
 	}
+	Car::ResetCarCount();
 	delete UIPtr;
+
 
 }

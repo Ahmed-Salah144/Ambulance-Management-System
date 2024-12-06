@@ -2,6 +2,7 @@
 #define CAR_H
 
 #include "Patient.h"
+#include<cassert>
 using namespace std;
 
 class Car {
@@ -42,7 +43,10 @@ public:
 	//	Setters and Getters
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
-	int getHID() const { return HID; }
+	int getHID() const { 
+		assert(HID <= 200);
+		return HID;
+	}
 
 	int getBusyTime() const { return busyTime; }
 
@@ -69,6 +73,8 @@ public:
 	//void setCarStatus(CarStatus status) { carStatus = status; }
 
 	int getID() const { return ID; }
+
+	static void ResetCarCount();
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 

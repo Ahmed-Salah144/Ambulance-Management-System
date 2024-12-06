@@ -1,6 +1,5 @@
 #include "../include/Car.h"
 
-
 int Car::totalNumberOfCars = 0;
 
 Car::Car(int hid, CarType cT, int speed)
@@ -14,6 +13,11 @@ Car::Car(int hid, CarType cT, int speed)
 	busyTime = 0;
 	checkupTime = -1;
 	outTime = -1;
+	assert(hid <= 200);
+}
+void Car::ResetCarCount()
+{
+	totalNumberOfCars = 0;
 }
 ostream& operator<<(ostream& out, Car& C)
 {

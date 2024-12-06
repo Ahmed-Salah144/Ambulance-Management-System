@@ -14,4 +14,13 @@ public:
 		}
 		return true;
 	}
+	bool isFailed()
+	{
+		for (int i = 1; i <= count; i++)
+		{
+			if (!listElements[i]->isFailed())
+				return false;
+		}
+		return true;
+	}
 };

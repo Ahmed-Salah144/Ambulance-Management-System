@@ -6,6 +6,7 @@
 UI::UI(Organizer * o)
 {
 	organizer = o;
+	/*
 	cout << "Choose Running Mode\nEnter S For Silent Mode\nEnter I For Interactive Mode\n";
 	char input;
 	cin >> input;
@@ -23,6 +24,8 @@ UI::UI(Organizer * o)
 		mode = INTERACTIVE;
 		break;
 	}
+	*/
+	mode = SILENT;
 	currentHospital = 0;
 }
 
