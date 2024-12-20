@@ -9,7 +9,7 @@ void sorting(vector<vector<int>>& vec) {
 }
 void GenerateFile(string str)
 {
-	//srand(time(0) * rand());
+	srand(time(0) * rand());
 	ofstream outFile(str);
 	if (!outFile)
 	{
@@ -95,11 +95,11 @@ void GenerateFile(string str)
 
 int main()
 {
-	for (int i = 0; i < 50 ; i++)
+	for (int i = 0; i < 6 ; i++)
 	{
-		//GenerateFile("tests/autotest"+to_string(i)+".txt");
+		GenerateFile("tests/autotest"+to_string(i)+".txt");
 	}
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		Organizer* myOrganizer = new Organizer;
 		myOrganizer->Simulate("tests/autotest" + to_string(i) + ".txt", "tests/Out" + to_string(i) + ".txt");
