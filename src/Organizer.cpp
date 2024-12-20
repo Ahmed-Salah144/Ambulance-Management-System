@@ -145,8 +145,8 @@ void Organizer::Output(string out)
 		return;
 	}
 	int npCount = 0, spCount = 0, epCount = 0;
-	int waitTimeSum = 0;
-	int busyTimeSum = 0;
+	long long waitTimeSum = 0;
+	long long busyTimeSum = 0;
 	int scCount = 0;
 	int ncCount = 0;
 
@@ -216,6 +216,8 @@ void Organizer::Simulate(string in,string out)
 	while ((!hospitals.isEmpty() || !patients.isEmpty()) && !hospitals.isFailed())
 	{
 		Advance();
+		if (worldTime > 3000000)
+			break;
 	}
 	Output(out);
 }
@@ -228,6 +230,8 @@ int Organizer::getFastestEmergency()
 
 	for (int i = 2; i <= numOfHospitals; i++)
 	{
+		if (hospitals[i]->isFailed())
+			continue;
 		if (minQueueLength > hospitals[i]->getEmergencyQueueLength())
 		{
 			minQueueLength = hospitals[i]->getEmergencyQueueLength();
@@ -241,7 +245,6 @@ int Organizer::getFastestEmergency()
 void Organizer::Advance()
 {
 	worldTime++;						// Advance Timestep
-	assert(worldTime < 10000000);
 
 	ProcessPatientList();
 
@@ -258,10 +261,10 @@ void Organizer::Advance()
 	if (failedCar = outList.CheckOutFailure(outFailureChance, failureTime))
 		OutCarFailure(failedCar);
 
-	//if (failedCar = backList.CheckBackFailure(outFailureChance, failureTime))
-		//BackCarFailure(failedCar);
+	if (failedCar = backList.CheckBackFailure(outFailureChance, failureTime))
+		BackCarFailure(failedCar);
 
-	//HospitalFailure();
+	HospitalFailure();
 
 	for (int i = 1; i <= numOfHospitals; i++)
 	{
@@ -440,7 +443,7 @@ void Organizer::ProcessBackList()
 		{
 			finishedPatient = backListFront->getAssignedPatient();
 
-			assert(worldTime > 0);
+			//assert(worldTime > 0);
 
 			finishedPatient->setFinishTime(worldTime);
 
@@ -483,6 +486,7 @@ void Organizer::ProcessPatientList()
 	while (!patients.isEmpty() && patientsFront->getRequestTime() <= worldTime)
 	{
 		patients.dequeue(patientsFront);
+		int x;
 		switch (patientsFront->getPatientType())
 		{
 		case NP:
@@ -492,12 +496,13 @@ void Organizer::ProcessPatientList()
 			hospitals[patientsFront->getHospitalID()]->EnqueueSpecialPatient(patientsFront);
 			break;
 		case EP:
-			/*if (!hospitals[patientsFront->getHospitalID()]->HandleEmergencyPatient(patientsFront))
+			if (!hospitals[patientsFront->getHospitalID()]->HandleEmergencyPatient(patientsFront))
 			{
-				hospitals[getFastestEmergency()]->EnqueueEmergencyPatient(patientsFront);
-				//This function is not taking distance into account FIX IT
-			}*/
-			hospitals[patientsFront->getHospitalID()]->EnqueueEmergencyPatient(patientsFront);
+				int newHospitalID = getFastestEmergency();
+				switchPatientHospital(patientsFront, newHospitalID);
+				hospitals[newHospitalID]->EnqueueEmergencyPatient(patientsFront);
+			}
+			//hospitals[patientsFront->getHospitalID()]->EnqueueEmergencyPatient(patientsFront);
 			break;
 		default:
 			assert(1 == 0);
@@ -508,12 +513,17 @@ void Organizer::ProcessPatientList()
 
 void Organizer::HospitalFailure()
 {
+	if (failedHospitals >= numOfHospitals * 3 / 4)
+		return;
 	int failedHospitalID = CheckHospitalFailure();
 	if (!failedHospitalID || hospitals[failedHospitalID]->isFailed())
 		return;
 
 	int nearestID = getNearestHospital(failedHospitalID);
-
+	if (nearestID == -1)
+	{
+		return;
+	}
 	Patient* patient = nullptr;
 	while (patient = hospitals[failedHospitalID]->HandNPOver())
 	{
@@ -529,7 +539,7 @@ void Organizer::HospitalFailure()
 	}
 	hospitals[failedHospitalID]->Clear();
 
-	hospitals[failedHospitalID]->Fail(hospitals[failedHospitalID]);
+	hospitals[failedHospitalID]->Fail(hospitals[nearestID]);
 
 	Car* car = nullptr;
 
@@ -545,13 +555,20 @@ void Organizer::HospitalFailure()
 	failedHospitals++;
 }
 
+void Organizer::switchPatientHospital(Patient* p, int newHID) const
+{
+	p->setNewHospital(newHID, distanceMatrix[newHID - 1][p->getHospitalID() - 1] + p->getDistance());
+}
+
 int Organizer::getNearestHospital(int hospitalID)
 {
 	int min = INT_MAX;
 	int closestID = -1;
 	for (int i = 1; i <= numOfHospitals; i++)
 	{
-		if (distanceMatrix[hospitalID-1][i-1] < min && i!=hospitalID && !hospitals[hospitalID]->isFailed())
+		if (i == hospitalID || hospitals[i]->isFailed())
+			continue;
+		if (distanceMatrix[hospitalID-1][i-1] < min)
 		{
 			closestID = i;
 			min = distanceMatrix[hospitalID - 1][i - 1];

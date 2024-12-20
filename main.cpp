@@ -2,9 +2,14 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
+void sorting(vector<vector<int>>& vec) {
+	sort(vec.begin(), vec.end(), [](const vector<int>& a, const vector<int>& b) {
+		return a[0] < b[0]; // Sort by the first element
+		});
+}
 void GenerateFile(string str)
 {
-	srand(time(0) * rand());
+	//srand(time(0) * rand());
 	ofstream outFile(str);
 	if (!outFile)
 	{
@@ -70,34 +75,36 @@ void GenerateFile(string str)
 	for (int i = 0; i < cancellationcount; i++)
 	{
 		vec[i][1] = rand() % reqnum + 1;
-		vec[i][0] = idToArrival[vec[i][1]];
+		vec[i][0] = idToArrival[vec[i][1]] + rand() % 100;
 		vec[i][2] = idToHos[vec[i][1]];
 	}
-	sort(vec.begin(), vec.end());
+	sorting(vec);
 	for (int i = 0; i < cancellationcount; i++)
 	{
-		outFile << vec[i][0] + rand() % 200 + 1 << "\t"<< vec[i][1] <<"\t" <<vec[i][2]<<"\n";
+		outFile << vec[i][0]<< "\t"<< vec[i][1] <<"\t" <<vec[i][2]<<"\n";
 	}
 
 	outFile << rand() % 100 + 1 << "\n";
-	outFile << rand() % 10 << "." << rand() % 100 << "\n";
-	outFile << rand() % 3 << "." << rand() % 100 << "\n";
-	outFile << rand() % 1 << "." << rand() % 100 << "\n";
+	outFile << rand() % 5 << "." << rand() % 100 << "\n";
+	outFile << rand() % 5 << "." << rand() % 100 << "\n";
+	outFile << rand() % 2 << "." << rand() % 100 << "\n";
 
 	delete[] idToHos;
 	delete[] idToArrival;
 }
+
 int main()
 {
-	for (int i = 0; i < 6 ; i++)
+	for (int i = 0; i < 50 ; i++)
 	{
-		GenerateFile("tests/autotest"+to_string(i)+".txt");
+		//GenerateFile("tests/autotest"+to_string(i)+".txt");
 	}
-	for (int i = 0; i < 6 ; i++)
+	for (int i = 0; i < 50; i++)
 	{
 		Organizer* myOrganizer = new Organizer;
 		myOrganizer->Simulate("tests/autotest" + to_string(i) + ".txt", "tests/Out" + to_string(i) + ".txt");
 		delete myOrganizer;
+		cout << "Finished test " << i << endl;
 	}
 	return 0;
 }

@@ -33,8 +33,11 @@ public:
 				current = current->getNext();
 			}
 		}		
-		if (frontPtr == nullptr)
-			backPtr = nullptr;
+		backPtr = frontPtr;
+		while (backPtr && backPtr->getNext())
+		{
+			backPtr = backPtr->getNext();
+		}
 		return cancelled; }	// returns cancelled patient if the request was found and cancelled and nullptr otherwise
 
 	// prints all patients in list as needed in output(<< is overloaded for Patient)

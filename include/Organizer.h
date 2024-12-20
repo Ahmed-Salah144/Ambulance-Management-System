@@ -113,7 +113,7 @@ public:
 	void ProcessPatientList();
 
 	void HospitalFailure();
-
+	void switchPatientHospital(Patient* p,int newHID) const;
 	int getNearestHospital(int hospitalID);
 
 	//void MoveToFinish(Patient * p);		//PHASE 1.2

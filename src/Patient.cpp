@@ -4,7 +4,7 @@
 Patient::Patient(int id, int rT, int hid, PatientType pT, int dist, int cS)
 	:ID(id),
 	requestTime(rT),
-	HID(hid),
+	closestHID(hid),
 	patientType(pT),
 	distance(dist),
 	caseSeverity(cS)
@@ -12,6 +12,7 @@ Patient::Patient(int id, int rT, int hid, PatientType pT, int dist, int cS)
 	pickupTime = -1;
 	assignmentTime = -1;
 	finishTime = -1;
+	HID = closestHID;
 
 	failedCar = nullptr;
 }

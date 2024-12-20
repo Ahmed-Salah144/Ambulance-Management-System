@@ -16,7 +16,7 @@ class Patient {
 
 	const int requestTime;				// Time of Ambulance Request
 
-	const int HID;						// Closest Hospital ID
+	const int closestHID;						// Closest Hospital ID
 
 	const PatientType patientType;		// Normal/Special-Case/Emergency-Case
 
@@ -25,6 +25,8 @@ class Patient {
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
 	int distance;						// Distance to Nearest Hospital
+
+	int HID;
 
 	int pickupTime;						// Time of Ambulance Arrival
 
@@ -47,7 +49,11 @@ public:
 	int getRequestTime() const { return requestTime; }
 
 	int getHospitalID() const { return HID; }
-
+	void setNewHospital(int newID,int newDist)
+	{
+		HID = newID;
+		distance = newDist;
+	}
 	PatientType getPatientType() const { return patientType; }
 
 	int getDistance() const { return distance; }

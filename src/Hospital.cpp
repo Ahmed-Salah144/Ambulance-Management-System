@@ -24,7 +24,10 @@ Hospital::Hospital(int id, int scNum, int ncNum, int scSpeed, int ncSpeed,Organi
 void Hospital::EnqueueSpecialPatient(Patient* patient)
 {
 	if (failed && nearestHospital && nearestHospital->ID != ID)
-		nearestHospital->SPqueue.enqueue(patient);
+	{
+		organizer->switchPatientHospital(patient, nearestHospital->ID);
+		nearestHospital->EnqueueSpecialPatient(patient);
+	}
 	else
 		SPqueue.enqueue(patient);
 }
@@ -32,7 +35,10 @@ void Hospital::EnqueueSpecialPatient(Patient* patient)
 void Hospital::EnqueueNormalPatient(Patient* patient)
 {
 	if (failed && nearestHospital && nearestHospital->ID != ID)
-		nearestHospital->NPqueue.enqueue(patient);
+	{
+		organizer->switchPatientHospital(patient, nearestHospital->ID);
+		nearestHospital->EnqueueNormalPatient(patient);
+	}
 	else
 	NPqueue.enqueue(patient);
 }
@@ -40,7 +46,10 @@ void Hospital::EnqueueNormalPatient(Patient* patient)
 void Hospital::EnqueueEmergencyPatient(Patient* patient)
 {
 	if (failed && nearestHospital && nearestHospital->ID != ID)
-		nearestHospital->EPqueue.enqueue(patient,patient->getCaseSeverity());
+	{
+		organizer->switchPatientHospital(patient, nearestHospital->ID);
+		nearestHospital->EnqueueEmergencyPatient(patient);
+	}
 	else
 	EPqueue.enqueue(patient,patient->getCaseSeverity());
 }
@@ -51,19 +60,28 @@ void Hospital::EnqueueFailedPatient(Patient* patient)
 	{
 	case NP:
 		if (failed && nearestHospital && nearestHospital->ID != ID)
-			nearestHospital->NPqueue.enqueueFront(patient);
+		{
+			organizer->switchPatientHospital(patient, nearestHospital->ID);
+			nearestHospital->EnqueueFailedPatient(patient);
+		}
 		else
 			NPqueue.enqueueFront(patient);
 		break;
 	case SP:
 		if (failed && nearestHospital && nearestHospital->ID != ID)
-			nearestHospital->SPqueue.enqueueFront(patient);
+		{
+			nearestHospital->EnqueueFailedPatient(patient);
+			organizer->switchPatientHospital(patient, nearestHospital->ID);
+		}
 		else
 			SPqueue.enqueueFront(patient);
 		break;
 	case EP:
 		if (failed && nearestHospital && nearestHospital->ID != ID)
-			nearestHospital->EPqueue.enqueue(patient,INT_MAX);
+		{
+			nearestHospital->EnqueueFailedPatient(patient);
+			organizer->switchPatientHospital(patient, nearestHospital->ID);
+		}
 		else
 			EPqueue.enqueue(patient, INT_MAX);
 		break;
